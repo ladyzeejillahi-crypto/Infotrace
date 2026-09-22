@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -185,12 +185,17 @@
             color: white;
         }
 
+        .save-btn:hover {
+            background: #125738;
+        }
+
         .empty {
             background: white;
             padding: 25px;
             border-radius: 12px;
             text-align: center;
             color: #60776b;
+            line-height: 1.6;
         }
 
         .note {
@@ -203,7 +208,18 @@
             border-radius: 5px;
         }
 
+        .success-message {
+            background: #edf8f1;
+            color: #176b45;
+            border: 1px solid #cce5d5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
         @media (max-width: 600px) {
+
             .research-container {
                 width: 94%;
             }
@@ -215,6 +231,19 @@
             .page-title {
                 font-size: 22px;
             }
+
+            .top-bar {
+                align-items: flex-start;
+            }
+
+            .result-actions {
+                flex-direction: column;
+            }
+
+            .source-btn,
+            .save-btn {
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -224,17 +253,25 @@
 <div class="research-container">
 
     <div class="top-bar">
-        <a href="dashboard.html" class="back-btn">← Back</a>
+
+        <a href="dashboard.html" class="back-btn">
+            ← Back
+        </a>
 
         <div>
-            <h1 class="page-title">🔎 Research Discovery</h1>
+            <h1 class="page-title">
+                🔎 Research Discovery
+            </h1>
         </div>
+
     </div>
+
 
     <p class="intro">
         Search for academic research related to your topic and find papers
         that may be useful for your assignment, project or literature review.
     </p>
+
 
     <div class="research-card">
 
@@ -248,6 +285,7 @@
             placeholder="e.g. Information literacy and academic performance"
         >
 
+
         <label for="researchNeed">
             What information are you looking for?
         </label>
@@ -256,6 +294,7 @@
             id="researchNeed"
             placeholder="e.g. Points explaining how information literacy affects academic performance among undergraduate students."
         ></textarea>
+
 
         <label for="researchSection">
             Where will you use it?
@@ -285,6 +324,7 @@
 
         </select>
 
+
         <button
             type="button"
             class="search-btn"
@@ -293,181 +333,316 @@
             🔍 Search Academic Sources
         </button>
 
-        <div id="status" class="status"></div>
+
+        <div
+            id="status"
+            class="status"
+            aria-live="polite"
+        ></div>
+
 
         <div class="note">
+
             <strong>How it works:</strong>
+
             Enter your research topic and explain the specific information
             you need. InfoTrace will search academic sources and display
             relevant research that you can review and save.
+
         </div>
 
     </div>
+
 
     <div id="resultsSection"></div>
 
 </div>
 
+
 <script>
 
-    const searchButton = document.getElementById("searchButton");
-    const topicInput = document.getElementById("researchTopic");
-    const needInput = document.getElementById("researchNeed");
-    const sectionInput = document.getElementById("researchSection");
-    const statusBox = document.getElementById("status");
-    const resultsSection = document.getElementById("resultsSection");
+const searchButton =
+    document.getElementById("searchButton");
+
+const topicInput =
+    document.getElementById("researchTopic");
+
+const needInput =
+    document.getElementById("researchNeed");
+
+const sectionInput =
+    document.getElementById("researchSection");
+
+const statusBox =
+    document.getElementById("status");
+
+const resultsSection =
+    document.getElementById("resultsSection");
 
 
-    searchButton.addEventListener("click", searchResearch);
+searchButton.addEventListener(
+    "click",
+    searchResearch
+);
 
 
-    async function searchResearch() {
+/* =====================================================
+   SEARCH ACADEMIC SOURCES
+===================================================== */
 
-        const topic = topicInput.value.trim();
-        const need = needInput.value.trim();
-        const section = sectionInput.value;
+async function searchResearch() {
 
-        if (!topic) {
+    const topic =
+        topicInput.value.trim();
 
-            alert("Please enter your research topic.");
+    const need =
+        needInput.value.trim();
 
-            topicInput.focus();
-
-            return;
-        }
-
-
-        searchButton.disabled = true;
-
-        searchButton.textContent = "🔄 Searching...";
-
-        statusBox.textContent =
-            "Searching academic sources. Please wait...";
-
-        resultsSection.innerHTML = "";
+    const section =
+        sectionInput.value;
 
 
-        try {
+    if (!topic) {
 
-            const searchQuery = need
-                ? topic + " " + need
-                : topic;
+        alert(
+            "Please enter your research topic."
+        );
 
+        topicInput.focus();
 
-            /*
-             * This sends the search request to the Netlify
-             * serverless function that we will create next.
-             */
-
-            const response = await fetch(
-                "/.netlify/functions/research-search?q="
-                + encodeURIComponent(searchQuery)
-            );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "The research search service could not be reached."
-                );
-
-            }
-
-
-            const data = await response.json();
-
-
-            if (!data || !data.papers || data.papers.length === 0) {
-
-                statusBox.textContent =
-                    "No academic results were found. Try different keywords.";
-
-                resultsSection.innerHTML = `
-                    <div class="empty">
-                        No research results found.
-                    </div>
-                `;
-
-                return;
-            }
-
-
-            statusBox.textContent =
-                "Found " + data.papers.length +
-                " academic result(s).";
-
-
-            displayResults(
-                data.papers,
-                topic,
-                need,
-                section
-            );
-
-
-        } catch (error) {
-
-            console.error(error);
-
-            statusBox.textContent =
-                "Something went wrong while searching.";
-
-            resultsSection.innerHTML = `
-                <div class="empty">
-                    <strong>Search could not be completed.</strong>
-                    <br><br>
-                    The academic search service has not been connected yet.
-                    We will connect it in the next step.
-                </div>
-            `;
-
-        } finally {
-
-            searchButton.disabled = false;
-
-            searchButton.textContent =
-                "🔍 Search Academic Sources";
-
-        }
+        return;
 
     }
 
 
-    function displayResults(
-        papers,
-        topic,
-        need,
-        section
-    ) {
+    searchButton.disabled = true;
+
+    searchButton.textContent =
+        "🔄 Searching...";
+
+
+    statusBox.textContent =
+        "Searching academic sources. Please wait...";
+
+
+    resultsSection.innerHTML = "";
+
+
+    try {
+
+        const searchQuery =
+            need
+                ? topic + " " + need
+                : topic;
+
+
+        const functionURL =
+            "/.netlify/functions/research-search?q=" +
+            encodeURIComponent(searchQuery);
+
+
+        const response =
+            await fetch(functionURL);
+
+
+        if (!response.ok) {
+
+            let errorMessage =
+                "The academic search service returned an error.";
+
+
+            try {
+
+                const errorData =
+                    await response.json();
+
+
+                if (
+                    errorData &&
+                    errorData.error
+                ) {
+
+                    errorMessage =
+                        errorData.error;
+
+                }
+
+            }
+            catch (jsonError) {
+
+                // Keep default error message.
+
+            }
+
+
+            throw new Error(
+                errorMessage +
+                " (Status " +
+                response.status +
+                ")"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data ||
+            !Array.isArray(data.papers)
+        ) {
+
+            throw new Error(
+                "The academic search service returned an invalid response."
+            );
+
+        }
+
+
+        if (
+            data.papers.length === 0
+        ) {
+
+            statusBox.textContent =
+                "No academic results were found. Try different keywords.";
+
+
+            resultsSection.innerHTML = `
+
+                <div class="empty">
+
+                    No research results found.
+
+                    <br><br>
+
+                    Try using broader or different keywords.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        statusBox.textContent =
+            "Found " +
+            data.papers.length +
+            " academic result(s).";
+
+
+        displayResults(
+            data.papers,
+            topic,
+            need,
+            section
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Research search error:",
+            error
+        );
+
+
+        statusBox.textContent =
+            "Something went wrong while searching.";
+
 
         resultsSection.innerHTML = `
-            <h2 class="results-title">
-                📚 Academic Research Results
-            </h2>
+
+            <div class="empty">
+
+                <strong>
+                    Search could not be completed.
+                </strong>
+
+                <br><br>
+
+                ${escapeHTML(
+                    error.message ||
+                    "Unable to connect to the academic search service."
+                )}
+
+                <br><br>
+
+                Please try again.
+
+            </div>
+
         `;
 
+    }
 
-        papers.forEach(function(paper) {
 
-            const card = document.createElement("div");
+    finally {
 
-            card.className = "result-card";
+        searchButton.disabled = false;
+
+        searchButton.textContent =
+            "🔍 Search Academic Sources";
+
+    }
+
+}
+
+
+/* =====================================================
+   DISPLAY RESULTS
+===================================================== */
+
+function displayResults(
+    papers,
+    topic,
+    need,
+    section
+) {
+
+    resultsSection.innerHTML = `
+
+        <h2 class="results-title">
+            📚 Academic Research Results
+        </h2>
+
+    `;
+
+
+    papers.forEach(
+        function(paper) {
+
+            const card =
+                document.createElement("div");
+
+
+            card.className =
+                "result-card";
 
 
             const title =
-                paper.title || "Untitled research paper";
+                paper.title ||
+                "Untitled research paper";
 
 
             const authors =
-                paper.authors || "Author information unavailable";
+                paper.authors ||
+                "Author information unavailable";
 
 
             const year =
-                paper.year || "Year unavailable";
+                paper.year ||
+                "Year unavailable";
 
 
             const journal =
-                paper.journal || "Publication information unavailable";
+                paper.journal ||
+                "Publication information unavailable";
 
 
             const abstract =
@@ -476,7 +651,8 @@
 
 
             const url =
-                paper.url || "#";
+                paper.url ||
+                "#";
 
 
             card.innerHTML = `
@@ -485,32 +661,60 @@
                     ${escapeHTML(title)}
                 </h3>
 
+
                 <div class="authors">
-                    <strong>Authors:</strong>
+
+                    <strong>
+                        Authors:
+                    </strong>
+
                     ${escapeHTML(authors)}
+
                 </div>
+
 
                 <div class="publication">
-                    <strong>Year:</strong>
-                    ${escapeHTML(String(year))}
+
+                    <strong>
+                        Year:
+                    </strong>
+
+                    ${escapeHTML(
+                        String(year)
+                    )}
+
                     <br>
 
-                    <strong>Publication:</strong>
+                    <strong>
+                        Publication:
+                    </strong>
+
                     ${escapeHTML(journal)}
+
                 </div>
+
 
                 <div class="abstract">
-                    <strong>Abstract:</strong>
+
+                    <strong>
+                        Abstract:
+                    </strong>
+
                     <br>
+
                     ${escapeHTML(abstract)}
+
                 </div>
 
+
                 <div class="result-actions">
+
 
                     ${
                         url !== "#"
                         ?
                         `
+
                         <a
                             href="${escapeAttribute(url)}"
                             target="_blank"
@@ -519,33 +723,35 @@
                         >
                             🔗 View Source
                         </a>
+
                         `
                         :
                         ""
                     }
 
+
                     <button
                         type="button"
                         class="save-btn"
-                        data-title="${escapeAttribute(title)}"
-                        data-abstract="${escapeAttribute(abstract)}"
-                        data-authors="${escapeAttribute(authors)}"
-                        data-year="${escapeAttribute(String(year))}"
-                        data-journal="${escapeAttribute(journal)}"
-                        data-url="${escapeAttribute(url)}"
                     >
                         💾 Save to InfoTrace
                     </button>
 
+
                 </div>
+
             `;
 
 
-            resultsSection.appendChild(card);
+            resultsSection.appendChild(
+                card
+            );
 
 
             const saveButton =
-                card.querySelector(".save-btn");
+                card.querySelector(
+                    ".save-btn"
+                );
 
 
             saveButton.addEventListener(
@@ -561,143 +767,237 @@
                         url,
                         topic,
                         need,
-                        section
+                        section,
+                        saveButton
                     );
 
                 }
             );
 
-        });
+        }
+    );
 
-    }
-
-
-    function saveResearch(
-        title,
-        abstract,
-        authors,
-        year,
-        journal,
-        url,
-        topic,
-        need,
-        section
-    ) {
-
-        let savedInformation = [];
+}
 
 
-        try {
+/* =====================================================
+   SAVE RESEARCH TO INFOTRACE
+===================================================== */
 
-            const existing =
-                localStorage.getItem("infoTraceData");
+function saveResearch(
+    title,
+    abstract,
+    authors,
+    year,
+    journal,
+    url,
+    topic,
+    need,
+    section,
+    saveButton
+) {
+
+    let savedInformation = [];
 
 
-            if (existing) {
+    try {
 
-                savedInformation =
-                    JSON.parse(existing);
+        const existing =
+            localStorage.getItem(
+                "infoTraceData"
+            );
 
-            }
 
-            if (!Array.isArray(savedInformation)) {
+        if (existing) {
 
-                savedInformation = [];
+            savedInformation =
+                JSON.parse(existing);
 
-            }
+        }
 
-        } catch (error) {
+
+        if (
+            !Array.isArray(savedInformation)
+        ) {
 
             savedInformation = [];
 
         }
 
+    }
+    catch (error) {
 
-        const newInformation = {
+        savedInformation = [];
 
-            id: Date.now(),
+    }
 
-            title: title,
 
-            information: abstract,
+    const newInformation = {
 
-            source:
-                authors +
-                " (" +
-                year +
-                "). " +
-                title,
+        id:
+            Date.now(),
 
-            location:
-                journal,
+        title:
+            title,
 
-            reason:
-                need ||
-                "Saved for research.",
+        information:
+            abstract,
 
-            problem:
-                topic,
+        source:
+            authors +
+            " (" +
+            year +
+            "). " +
+            title,
 
-            keywords:
-                topic,
+        location:
+            journal,
 
-            used:
-                "No",
+        reason:
+            need ||
+            "Saved for research.",
 
-            usage:
-                section,
+        problem:
+            topic,
 
-            notes:
-                "Academic source found through InfoTrace Research Discovery." +
-                (url !== "#"
+        keywords:
+            topic,
+
+        used:
+            "No",
+
+        usage:
+            section,
+
+        notes:
+            "Academic source found through InfoTrace Research Discovery." +
+            (
+                url !== "#"
                     ? " Source: " + url
-                    : ""),
+                    : ""
+            ),
 
-            date:
-                new Date().toLocaleString()
+        date:
+            new Date().toLocaleString()
 
-        };
-
-
-        savedInformation.push(
-            newInformation
-        );
+    };
 
 
-        localStorage.setItem(
-            "infoTraceData",
-            JSON.stringify(savedInformation)
-        );
+    savedInformation.push(
+        newInformation
+    );
 
 
-        alert(
-            "Research information saved to My Information."
-        );
+    localStorage.setItem(
+        "infoTraceData",
+        JSON.stringify(
+            savedInformation
+        )
+    );
 
-    }
 
+    if (saveButton) {
 
-    function escapeHTML(value) {
+        saveButton.textContent =
+            "✅ Saved to InfoTrace";
 
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+        saveButton.disabled =
+            true;
+
+        saveButton.style.opacity =
+            "0.7";
 
     }
 
 
-    function escapeAttribute(value) {
+    const message =
+        document.createElement("div");
 
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/"/g, "&quot;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;");
+
+    message.className =
+        "success-message";
+
+
+    message.textContent =
+        "Research information saved to My Information.";
+
+
+    if (saveButton) {
+
+        saveButton.parentElement
+            .parentElement
+            .appendChild(message);
 
     }
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(value) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   ESCAPE ATTRIBUTE
+===================================================== */
+
+function escapeAttribute(value) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        );
+
+}
 
 </script>
 
