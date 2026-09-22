@@ -1,15 +1,29 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Research Discovery - InfoTrace</title>
 
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="design.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="design.css"
+    >
 
     <style>
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -157,6 +171,24 @@
             color: #30483b;
         }
 
+        .extracted-box {
+            margin-top: 18px;
+            padding: 16px;
+            background: #f0f7f3;
+            border-left: 4px solid #176b45;
+            border-radius: 6px;
+        }
+
+        .extracted-box h4 {
+            margin-top: 0;
+            color: #176b45;
+        }
+
+        .extracted-point {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
         .result-actions {
             display: flex;
             gap: 10px;
@@ -232,10 +264,6 @@
                 font-size: 22px;
             }
 
-            .top-bar {
-                align-items: flex-start;
-            }
-
             .result-actions {
                 flex-direction: column;
             }
@@ -244,36 +272,47 @@
             .save-btn {
                 text-align: center;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
 <div class="research-container">
+
 
     <div class="top-bar">
 
-        <a href="dashboard.html" class="back-btn">
+        <a
+            href="dashboard.html"
+            class="back-btn"
+        >
             ← Back
         </a>
 
-        <div>
-            <h1 class="page-title">
-                🔎 Research Discovery
-            </h1>
-        </div>
+        <h1 class="page-title">
+            🔎 Research Discovery
+        </h1>
 
     </div>
 
 
     <p class="intro">
-        Search for academic research related to your topic and find papers
-        that may be useful for your assignment, project or literature review.
+
+        Search academic research, identify relevant studies,
+        and extract the specific information you need from
+        available research records.
+
     </p>
 
 
     <div class="research-card">
+
 
         <label for="researchTopic">
             Research Topic
@@ -287,12 +326,12 @@
 
 
         <label for="researchNeed">
-            What information are you looking for?
+            What exactly do you want from the research?
         </label>
 
         <textarea
             id="researchNeed"
-            placeholder="e.g. Points explaining how information literacy affects academic performance among undergraduate students."
+            placeholder="e.g. Extract the problems affecting information literacy among undergraduate students."
         ></textarea>
 
 
@@ -330,7 +369,7 @@
             class="search-btn"
             id="searchButton"
         >
-            🔍 Search Academic Sources
+            🔍 Search & Extract
         </button>
 
 
@@ -343,11 +382,31 @@
 
         <div class="note">
 
-            <strong>How it works:</strong>
+            <strong>Examples of what you can ask:</strong>
 
-            Enter your research topic and explain the specific information
-            you need. InfoTrace will search academic sources and display
-            relevant research that you can review and save.
+            <br><br>
+
+            • Extract the research problems.
+
+            <br>
+
+            • Find the research gap.
+
+            <br>
+
+            • Find the causes of the problem.
+
+            <br>
+
+            • Find the effects on academic performance.
+
+            <br>
+
+            • Extract the recommendations.
+
+            <br>
+
+            • Find evidence that the problem exists.
 
         </div>
 
@@ -356,28 +415,49 @@
 
     <div id="resultsSection"></div>
 
+
 </div>
+
 
 
 <script>
 
+
 const searchButton =
-    document.getElementById("searchButton");
+    document.getElementById(
+        "searchButton"
+    );
+
 
 const topicInput =
-    document.getElementById("researchTopic");
+    document.getElementById(
+        "researchTopic"
+    );
+
 
 const needInput =
-    document.getElementById("researchNeed");
+    document.getElementById(
+        "researchNeed"
+    );
+
 
 const sectionInput =
-    document.getElementById("researchSection");
+    document.getElementById(
+        "researchSection"
+    );
+
 
 const statusBox =
-    document.getElementById("status");
+    document.getElementById(
+        "status"
+    );
+
 
 const resultsSection =
-    document.getElementById("resultsSection");
+    document.getElementById(
+        "resultsSection"
+    );
+
 
 
 searchButton.addEventListener(
@@ -386,20 +466,25 @@ searchButton.addEventListener(
 );
 
 
+
 /* =====================================================
-   SEARCH ACADEMIC SOURCES
+   SEARCH
 ===================================================== */
 
 async function searchResearch() {
 
+
     const topic =
         topicInput.value.trim();
+
 
     const need =
         needInput.value.trim();
 
+
     const section =
         sectionInput.value;
+
 
 
     if (!topic) {
@@ -415,20 +500,26 @@ async function searchResearch() {
     }
 
 
-    searchButton.disabled = true;
+
+    searchButton.disabled =
+        true;
+
 
     searchButton.textContent =
         "🔄 Searching...";
 
 
     statusBox.textContent =
-        "Searching academic sources. Please wait...";
+        "Searching academic sources and analysing available research...";
 
 
-    resultsSection.innerHTML = "";
+    resultsSection.innerHTML =
+        "";
+
 
 
     try {
+
 
         const searchQuery =
             need
@@ -436,19 +527,25 @@ async function searchResearch() {
                 : topic;
 
 
-        const functionURL =
+
+        const url =
             "/.netlify/functions/research-search?q=" +
-            encodeURIComponent(searchQuery);
+            encodeURIComponent(
+                searchQuery
+            );
+
 
 
         const response =
-            await fetch(functionURL);
+            await fetch(url);
+
 
 
         if (!response.ok) {
 
-            let errorMessage =
-                "The academic search service returned an error.";
+
+            let message =
+                "Academic search returned an error.";
 
 
             try {
@@ -462,21 +559,21 @@ async function searchResearch() {
                     errorData.error
                 ) {
 
-                    errorMessage =
+                    message =
                         errorData.error;
 
                 }
 
             }
-            catch (jsonError) {
+            catch (error) {
 
-                // Keep default error message.
+                // Keep default message.
 
             }
 
 
             throw new Error(
-                errorMessage +
+                message +
                 " (Status " +
                 response.status +
                 ")"
@@ -485,20 +582,25 @@ async function searchResearch() {
         }
 
 
+
         const data =
             await response.json();
 
 
+
         if (
             !data ||
-            !Array.isArray(data.papers)
+            !Array.isArray(
+                data.papers
+            )
         ) {
 
             throw new Error(
-                "The academic search service returned an invalid response."
+                "The academic service returned an invalid response."
             );
 
         }
+
 
 
         if (
@@ -506,18 +608,18 @@ async function searchResearch() {
         ) {
 
             statusBox.textContent =
-                "No academic results were found. Try different keywords.";
+                "No academic results were found.";
 
 
             resultsSection.innerHTML = `
 
                 <div class="empty">
 
-                    No research results found.
+                    No research results were found.
 
                     <br><br>
 
-                    Try using broader or different keywords.
+                    Try using broader keywords.
 
                 </div>
 
@@ -528,10 +630,12 @@ async function searchResearch() {
         }
 
 
+
         statusBox.textContent =
             "Found " +
             data.papers.length +
             " academic result(s).";
+
 
 
         displayResults(
@@ -541,10 +645,12 @@ async function searchResearch() {
             section
         );
 
+
     }
 
 
     catch (error) {
+
 
         console.error(
             "Research search error:",
@@ -553,7 +659,7 @@ async function searchResearch() {
 
 
         statusBox.textContent =
-            "Something went wrong while searching.";
+            "Search could not be completed.";
 
 
         resultsSection.innerHTML = `
@@ -571,10 +677,6 @@ async function searchResearch() {
                     "Unable to connect to the academic search service."
                 )}
 
-                <br><br>
-
-                Please try again.
-
             </div>
 
         `;
@@ -584,14 +686,18 @@ async function searchResearch() {
 
     finally {
 
-        searchButton.disabled = false;
+
+        searchButton.disabled =
+            false;
+
 
         searchButton.textContent =
-            "🔍 Search Academic Sources";
+            "🔍 Search & Extract";
 
     }
 
 }
+
 
 
 /* =====================================================
@@ -605,6 +711,7 @@ function displayResults(
     section
 ) {
 
+
     resultsSection.innerHTML = `
 
         <h2 class="results-title">
@@ -614,15 +721,20 @@ function displayResults(
     `;
 
 
+
     papers.forEach(
         function(paper) {
 
+
             const card =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
 
             card.className =
                 "result-card";
+
 
 
             const title =
@@ -647,12 +759,13 @@ function displayResults(
 
             const abstract =
                 paper.abstract ||
-                "No abstract was available for this paper.";
+                "No abstract available.";
 
 
             const url =
                 paper.url ||
                 "#";
+
 
 
             card.innerHTML = `
@@ -689,7 +802,9 @@ function displayResults(
                         Publication:
                     </strong>
 
-                    ${escapeHTML(journal)}
+                    ${escapeHTML(
+                        journal
+                    )}
 
                 </div>
 
@@ -697,12 +812,30 @@ function displayResults(
                 <div class="abstract">
 
                     <strong>
-                        Abstract:
+                        Available Abstract:
                     </strong>
 
-                    <br>
+                    <br><br>
 
-                    ${escapeHTML(abstract)}
+                    ${escapeHTML(
+                        abstract
+                    )}
+
+                </div>
+
+
+                <div class="extracted-box">
+
+                    <h4>
+                        🎯 Requested Information
+                    </h4>
+
+                    <div class="extracted-content">
+
+                        Analysing this research
+                        for your request...
+
+                    </div>
 
                 </div>
 
@@ -713,6 +846,7 @@ function displayResults(
                     ${
                         url !== "#"
                         ?
+
                         `
 
                         <a
@@ -725,8 +859,11 @@ function displayResults(
                         </a>
 
                         `
+
                         :
+
                         ""
+
                     }
 
 
@@ -743,9 +880,34 @@ function displayResults(
             `;
 
 
+
             resultsSection.appendChild(
                 card
             );
+
+
+
+            /*
+             * Analyse the available abstract
+             * according to the user's request.
+             */
+
+            const extractedContent =
+                card.querySelector(
+                    ".extracted-content"
+                );
+
+
+            const extracted =
+                extractRequestedInformation(
+                    abstract,
+                    need
+                );
+
+
+            extractedContent.innerHTML =
+                extracted;
+
 
 
             const saveButton =
@@ -754,9 +916,11 @@ function displayResults(
                 );
 
 
+
             saveButton.addEventListener(
                 "click",
                 function() {
+
 
                     saveResearch(
                         title,
@@ -768,11 +932,14 @@ function displayResults(
                         topic,
                         need,
                         section,
+                        extracted,
                         saveButton
                     );
 
+
                 }
             );
+
 
         }
     );
@@ -780,8 +947,279 @@ function displayResults(
 }
 
 
+
 /* =====================================================
-   SAVE RESEARCH TO INFOTRACE
+   EXTRACT REQUESTED INFORMATION
+===================================================== */
+
+function extractRequestedInformation(
+    text,
+    request
+) {
+
+
+    if (
+        !text ||
+        text === "No abstract available."
+    ) {
+
+        return `
+
+            <p class="extracted-point">
+
+                No accessible abstract was available
+                for this paper.
+
+            </p>
+
+            <p class="extracted-point">
+
+                Open <strong>View Source</strong>
+                to check whether the full paper is
+                publicly available.
+
+            </p>
+
+        `;
+
+    }
+
+
+
+    const lowerRequest =
+        String(
+            request || ""
+        ).toLowerCase();
+
+
+    const lowerText =
+        String(
+            text
+        ).toLowerCase();
+
+
+
+    let keywords = [];
+
+
+
+    if (
+        lowerRequest.includes(
+            "problem"
+        ) ||
+        lowerRequest.includes(
+            "challenge"
+        ) ||
+        lowerRequest.includes(
+            "barrier"
+        )
+    ) {
+
+        keywords = [
+            "problem",
+            "challenge",
+            "barrier",
+            "difficulty",
+            "limitation",
+            "lack",
+            "poor",
+            "inadequate",
+            "constraint"
+        ];
+
+    }
+
+
+    else if (
+        lowerRequest.includes(
+            "gap"
+        )
+    ) {
+
+        keywords = [
+            "gap",
+            "limited",
+            "little research",
+            "few studies",
+            "remains unclear",
+            "not known",
+            "understudied"
+        ];
+
+    }
+
+
+    else if (
+        lowerRequest.includes(
+            "effect"
+        ) ||
+        lowerRequest.includes(
+            "impact"
+        )
+    ) {
+
+        keywords = [
+            "effect",
+            "impact",
+            "influence",
+            "associated",
+            "relationship",
+            "improve",
+            "increase",
+            "decrease"
+        ];
+
+    }
+
+
+    else if (
+        lowerRequest.includes(
+            "cause"
+        )
+    ) {
+
+        keywords = [
+            "cause",
+            "factor",
+            "because",
+            "due to",
+            "contribute"
+        ];
+
+    }
+
+
+    else if (
+        lowerRequest.includes(
+            "recommend"
+        ) ||
+        lowerRequest.includes(
+            "solution"
+        )
+    ) {
+
+        keywords = [
+            "recommend",
+            "should",
+            "need to",
+            "suggest",
+            "propose"
+        ];
+
+    }
+
+
+    else {
+
+        keywords =
+            lowerRequest
+                .split(/\s+/)
+                .filter(
+                    word =>
+                        word.length > 4
+                )
+                .slice(
+                    0,
+                    8
+                );
+
+    }
+
+
+
+    const sentences =
+        text.match(
+            /[^.!?]+[.!?]+/g
+        ) || [text];
+
+
+
+    const matches =
+        sentences.filter(
+            function(sentence) {
+
+
+                const sentenceLower =
+                    sentence.toLowerCase();
+
+
+                return keywords.some(
+                    function(keyword) {
+
+                        return sentenceLower.includes(
+                            keyword
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+
+    const selected =
+        matches.slice(
+            0,
+            5
+        );
+
+
+
+    if (
+        selected.length === 0
+    ) {
+
+        return `
+
+            <p class="extracted-point">
+
+                No exact matching statement was
+                identified in the available abstract.
+
+            </p>
+
+            <p class="extracted-point">
+
+                <strong>
+                    Note:
+                </strong>
+
+                The system only displays information
+                supported by the available research record.
+
+            </p>
+
+        `;
+
+    }
+
+
+
+    return selected
+        .map(
+            function(sentence) {
+
+                return `
+
+                    <p class="extracted-point">
+                        • ${escapeHTML(
+                            sentence.trim()
+                        )}
+                    </p>
+
+                `;
+
+            }
+        )
+        .join("");
+
+}
+
+
+
+/* =====================================================
+   SAVE TO INFOTRACE
 ===================================================== */
 
 function saveResearch(
@@ -794,13 +1232,18 @@ function saveResearch(
     topic,
     need,
     section,
+    extracted,
     saveButton
 ) {
 
-    let savedInformation = [];
+
+    let savedInformation =
+        [];
+
 
 
     try {
+
 
         const existing =
             localStorage.getItem(
@@ -811,25 +1254,33 @@ function saveResearch(
         if (existing) {
 
             savedInformation =
-                JSON.parse(existing);
+                JSON.parse(
+                    existing
+                );
 
         }
 
 
         if (
-            !Array.isArray(savedInformation)
+            !Array.isArray(
+                savedInformation
+            )
         ) {
 
-            savedInformation = [];
+            savedInformation =
+                [];
 
         }
+
 
     }
     catch (error) {
 
-        savedInformation = [];
+        savedInformation =
+            [];
 
     }
+
 
 
     const newInformation = {
@@ -870,7 +1321,11 @@ function saveResearch(
             section,
 
         notes:
-            "Academic source found through InfoTrace Research Discovery." +
+            "Requested information extracted through InfoTrace Research Discovery." +
+            " " +
+            stripHTML(
+                extracted
+            ) +
             (
                 url !== "#"
                     ? " Source: " + url
@@ -883,9 +1338,11 @@ function saveResearch(
     };
 
 
+
     savedInformation.push(
         newInformation
     );
+
 
 
     localStorage.setItem(
@@ -896,22 +1353,24 @@ function saveResearch(
     );
 
 
-    if (saveButton) {
 
-        saveButton.textContent =
-            "✅ Saved to InfoTrace";
+    saveButton.textContent =
+        "✅ Saved to InfoTrace";
 
-        saveButton.disabled =
-            true;
 
-        saveButton.style.opacity =
-            "0.7";
+    saveButton.disabled =
+        true;
 
-    }
+
+    saveButton.style.opacity =
+        "0.7";
+
 
 
     const message =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     message.className =
@@ -922,24 +1381,54 @@ function saveResearch(
         "Research information saved to My Information.";
 
 
-    if (saveButton) {
-
-        saveButton.parentElement
-            .parentElement
-            .appendChild(message);
-
-    }
+    saveButton
+        .parentElement
+        .parentElement
+        .appendChild(
+            message
+        );
 
 }
+
+
+
+/* =====================================================
+   STRIP HTML
+===================================================== */
+
+function stripHTML(
+    html
+) {
+
+    const temp =
+        document.createElement(
+            "div"
+        );
+
+
+    temp.innerHTML =
+        html;
+
+
+    return temp.textContent ||
+        temp.innerText ||
+        "";
+
+}
+
 
 
 /* =====================================================
    ESCAPE HTML
 ===================================================== */
 
-function escapeHTML(value) {
+function escapeHTML(
+    value
+) {
 
-    return String(value)
+    return String(
+        value
+    )
 
         .replace(
             /&/g,
@@ -969,13 +1458,18 @@ function escapeHTML(value) {
 }
 
 
+
 /* =====================================================
    ESCAPE ATTRIBUTE
 ===================================================== */
 
-function escapeAttribute(value) {
+function escapeAttribute(
+    value
+) {
 
-    return String(value)
+    return String(
+        value
+    )
 
         .replace(
             /&/g,
@@ -1001,5 +1495,7 @@ function escapeAttribute(value) {
 
 </script>
 
+
 </body>
+
 </html>
