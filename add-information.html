@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Information - InfoTrace</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>InfoTrace</h1>
+
+        <p>Record New Information</p>
+
+    </header>
+
+
+    <main>
+
+        <section class="dashboard">
+
+            <h2>Add Information</h2>
+
+            <p class="intro">
+                Record the information you found and the context behind it.
+            </p>
+
+
+            <form id="informationForm">
+
+                <label>Information Title</label>
+
+                <input
+                    type="text"
+                    id="title"
+                    placeholder="Enter a title"
+                    required
+                >
+
+
+                <label>Information</label>
+
+                <textarea
+                    id="information"
+                    placeholder="Enter or paste the information here"
+                    required
+                ></textarea>
+
+
+                <label>Source</label>
+
+                <input
+                    type="text"
+                    id="source"
+                    placeholder="e.g. Book, Website, Journal"
+                >
+
+
+                <label>Where did you find it?</label>
+
+                <input
+                    type="text"
+                    id="location"
+                    placeholder="e.g. Google, Library, Lecture"
+                >
+
+
+                <label>Why did you save it?</label>
+
+                <textarea
+                    id="reason"
+                    placeholder="Why is this information important to you?"
+                ></textarea>
+
+
+                <label>What problem were you solving?</label>
+
+                <textarea
+                    id="problem"
+                    placeholder="What were you looking for or trying to solve?"
+                ></textarea>
+
+
+                <label>Topics / Keywords</label>
+
+                <input
+                    type="text"
+                    id="keywords"
+                    placeholder="e.g. Information Retrieval, Library"
+                >
+
+
+                <label>Did you eventually use this information?</label>
+
+                <select id="used">
+
+                    <option value="">
+                        Select an option
+                    </option>
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                </select>
+
+
+                <label>How did you use it?</label>
+
+                <textarea
+                    id="usage"
+                    placeholder="Explain how you used the information"
+                ></textarea>
+
+
+                <label>Additional Notes</label>
+
+                <textarea
+                    id="notes"
+                    placeholder="Add any other useful details"
+                ></textarea>
+
+
+                <button
+                    type="submit"
+                    class="main-button"
+                >
+                    Save Information
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

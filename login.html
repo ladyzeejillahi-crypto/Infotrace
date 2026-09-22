@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - InfoTrace</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>InfoTrace</h1>
+
+        <p>Personal Research Information System</p>
+
+    </header>
+
+
+    <main>
+
+        <section class="dashboard">
+
+            <h2>Login</h2>
+
+            <p class="intro">
+                Login to access your saved research information.
+            </p>
+
+
+            <form id="loginForm">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+
+                <br><br>
+
+
+                <button
+                    type="submit"
+                    class="main-button"
+                >
+                    Login
+                </button>
+
+            </form>
+
+
+            <br>
+
+
+            <p>
+                Don't have an account?
+
+                <a href="register.html">
+                    Create an account
+                </a>
+
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        const loginForm =
+            document.getElementById("loginForm");
+
+
+        loginForm.addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const email =
+                    document
+                        .getElementById("email")
+                        .value
+                        .trim();
+
+
+                const password =
+                    document
+                        .getElementById("password")
+                        .value;
+
+
+                const savedUser =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "infoTraceUser"
+                        )
+                    );
+
+
+                if (!savedUser) {
+
+                    alert(
+                        "No account found. Please register first."
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    email === savedUser.email &&
+                    password === savedUser.password
+                ) {
+
+                    localStorage.setItem(
+                        "infoTraceLoggedIn",
+                        "true"
+                    );
+
+
+                    alert(
+                        "Login successful!"
+                    );
+
+
+                    window.location.href =
+                        "dashboard.html";
+
+                }
+
+                else {
+
+                    alert(
+                        "Incorrect email or password."
+                    );
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,2391 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>InfoTrace Games</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f8f5;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    color: #2e7d32;
+}
+
+.box {
+    background: white;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+button,
+input,
+select {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    border-radius: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+button {
+    border: none;
+    background: #2e7d32;
+    color: white;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.6;
+}
+
+.secondary {
+    background: #607d64;
+}
+
+.answer {
+    background: #eeeeee;
+    color: #222;
+    text-align: left;
+}
+
+.answer.correct {
+    background: #4caf50;
+    color: white;
+}
+
+.answer.wrong {
+    background: #e53935;
+    color: white;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+.stat {
+    flex: 1;
+    background: #eef5ef;
+    padding: 10px 4px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.stat strong {
+    display: block;
+    font-size: 18px;
+    color: #2e7d32;
+    margin-top: 4px;
+}
+
+#timer {
+    font-size: 22px;
+    font-weight: bold;
+    color: #e65100;
+    margin: 10px;
+}
+
+#questionNumber {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+#question {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1.4;
+    margin: 20px 0;
+}
+
+#feedback {
+    min-height: 25px;
+    font-weight: bold;
+    margin: 10px;
+}
+
+#streakMessage {
+    color: #ff9800;
+    font-weight: bold;
+    min-height: 22px;
+}
+
+.big-score {
+    font-size: 40px;
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.info-box {
+    background: #eef5ef;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.achievement {
+    background: #eef5ef;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.locked {
+    opacity: 0.45;
+}
+
+.hidden {
+    display: none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- ================= MENU ================= -->
+
+<div id="menu" class="box">
+
+<h1>🎮 InfoTrace Games</h1>
+
+<p>Test your knowledge and have fun.</p>
+
+<div class="info-box">
+
+<strong>👤 Player Name</strong>
+
+<input
+id="playerName"
+type="text"
+placeholder="Enter your name"
+>
+
+<button onclick="savePlayerName()">
+Save Name
+</button>
+
+</div>
+
+<p>
+Welcome,
+<strong id="welcomeName">Player</strong>
+</p>
+
+<p>
+🏆 High Score:
+<strong id="menuHighScore">0</strong>
+</p>
+
+
+<h3>⚡ Quick Play</h3>
+
+<select id="difficulty">
+
+<option value="all">
+All Difficulties
+</option>
+
+<option value="easy">
+Easy
+</option>
+
+<option value="medium">
+Medium
+</option>
+
+<option value="hard">
+Hard
+</option>
+
+</select>
+
+
+<select id="category">
+
+<option value="all">
+🌍 All Categories
+</option>
+
+<option value="Geography">
+🌍 Geography
+</option>
+
+<option value="Mathematics">
+➗ Mathematics
+</option>
+
+<option value="Music">
+🎵 Music
+</option>
+
+<option value="Science">
+🔬 Science
+</option>
+
+<option value="Technology">
+💻 Technology
+</option>
+
+<option value="History">
+📜 History
+</option>
+
+<option value="Biology">
+🧬 Biology
+</option>
+
+<option value="Government">
+🏛️ Government
+</option>
+
+<option value="Business">
+💼 Business
+</option>
+
+<option value="Sports">
+⚽ Sports
+</option>
+
+<option value="Entertainment">
+🎬 Entertainment
+</option>
+
+<option value="Agriculture">
+🌾 Agriculture
+</option>
+
+<option value="Psychology">
+🧠 Psychology
+</option>
+
+<option value="English">
+📚 English
+</option>
+
+<option value="Chemistry">
+⚗️ Chemistry
+</option>
+
+<option value="Physics">
+⚛️ Physics
+</option>
+
+<option value="Nature and Animals">
+🐘 Nature and Animals
+</option>
+
+<option value="Food and Nutrition">
+🍎 Food and Nutrition
+</option>
+
+<option value="Engineering">
+⚙️ Engineering
+</option>
+
+<option value="Transport">
+🚗 Transport
+</option>
+
+<option value="Culture">
+🌎 Culture
+</option>
+
+<option value="Information and Research">
+📖 Information and Research
+</option>
+
+<option value="General Knowledge">
+🧩 General Knowledge
+</option>
+
+</select>
+
+
+<button onclick="startQuickPlay()">
+⚡ Start Quick Play
+</button>
+
+
+<button onclick="startMyInformation()">
+🧠 My Information
+</button>
+
+
+<button onclick="showStatistics()">
+📊 My Statistics
+</button>
+
+
+<button onclick="showAchievements()">
+🏅 Achievements
+</button>
+
+
+<button
+class="secondary"
+onclick="goBack()"
+>
+← Back to Dashboard
+</button>
+
+</div>
+
+
+<!-- ================= GAME ================= -->
+
+<div id="game" class="box hidden">
+
+<div class="stats">
+
+<div class="stat">
+Score
+<strong id="score">0</strong>
+</div>
+
+<div class="stat">
+Streak
+<strong id="streak">0</strong>
+</div>
+
+<div class="stat">
+Level
+<strong id="level">1</strong>
+</div>
+
+<div class="stat">
+Lives
+<strong id="lives">❤️❤️❤️</strong>
+</div>
+
+</div>
+
+
+<button
+class="secondary"
+onclick="pauseGame()"
+>
+⏸️ Pause
+</button>
+
+
+<div id="timer">
+⏱️ 15
+</div>
+
+
+<div id="questionNumber"></div>
+
+<div id="question"></div>
+
+<div id="answers"></div>
+
+<div id="feedback"></div>
+
+<div id="streakMessage"></div>
+
+
+<button
+id="nextButton"
+class="hidden"
+onclick="nextQuestion()"
+>
+Next Question →
+</button>
+
+
+<button
+class="secondary"
+onclick="showMenu()"
+>
+Exit Game
+</button>
+
+</div>
+
+
+<!-- ================= RESULT ================= -->
+
+<div id="result" class="box hidden">
+
+<h1>🎉 Game Over!</h1>
+
+<p>
+👤 <strong id="resultPlayer">Player</strong>
+</p>
+
+<div
+class="big-score"
+id="finalScore"
+>
+0
+</div>
+
+<p>
+Level:
+<strong id="finalLevel">1</strong>
+</p>
+
+<p>
+Best Streak:
+<strong id="finalStreak">0</strong>
+</p>
+
+<p>
+Lives Remaining:
+<strong id="finalLives">0</strong>
+</p>
+
+<p>
+Questions:
+<strong id="finalQuestions">0</strong>
+</p>
+
+<div id="newHighScore"></div>
+
+<div id="earnedBadges"></div>
+
+
+<button onclick="playAgain()">
+🔄 Play Again
+</button>
+
+
+<button onclick="showStatistics()">
+📊 Statistics
+</button>
+
+
+<button
+class="secondary"
+onclick="showMenu()"
+>
+🏠 Back to Games
+</button>
+
+</div>
+
+
+<!-- ================= STATISTICS ================= -->
+
+<div id="statistics" class="box hidden">
+
+<h1>📊 My Statistics</h1>
+
+<p>
+👤 Player:
+<strong id="statPlayer">Player</strong>
+</p>
+
+<p>
+🎮 Games Played:
+<strong id="gamesPlayed">0</strong>
+</p>
+
+<p>
+❓ Questions Answered:
+<strong id="questionsAnswered">0</strong>
+</p>
+
+<p>
+✅ Correct:
+<strong id="correctAnswers">0</strong>
+</p>
+
+<p>
+❌ Wrong:
+<strong id="wrongAnswers">0</strong>
+</p>
+
+<p>
+🎯 Accuracy:
+<strong id="accuracy">0%</strong>
+</p>
+
+<p>
+⭐ Total Points:
+<strong id="totalPoints">0</strong>
+</p>
+
+<p>
+🔥 Best Streak:
+<strong id="statBestStreak">0</strong>
+</p>
+
+<p>
+🏆 High Score:
+<strong id="statHighScore">0</strong>
+</p>
+
+<button onclick="resetStatistics()">
+Reset Statistics
+</button>
+
+<button
+class="secondary"
+onclick="showMenu()"
+>
+← Back
+</button>
+
+</div>
+
+
+<!-- ================= ACHIEVEMENTS ================= -->
+
+<div id="achievements" class="box hidden">
+
+<h1>🏅 Achievements</h1>
+
+<div id="badgeList"></div>
+
+<button
+class="secondary"
+onclick="showMenu()"
+>
+← Back
+</button>
+
+</div>
+
+
+<!-- ================= PAUSE ================= -->
+
+<div id="pauseScreen" class="box hidden">
+
+<h1>⏸️ Game Paused</h1>
+
+<p>Your game is paused.</p>
+
+<button onclick="resumeGame()">
+▶️ Resume
+</button>
+
+<button
+class="secondary"
+onclick="showMenu()"
+>
+Exit Game
+</button>
+
+</div>
+
+
+<!-- ================= QUESTIONS ================= -->
+
+<script src="questions.js"></script>
+
+
+<!-- ================= GAME JAVASCRIPT ================= -->
+
+<script>
+
+let gameQuestions = [];
+
+let currentQuestion = 0;
+
+let score = 0;
+
+let streak = 0;
+
+let bestStreak = 0;
+
+let level = 1;
+
+let lives = 3;
+
+let timer = null;
+
+let timeLeft = 15;
+
+let answered = false;
+
+let paused = false;
+
+let gameMode = "quick";
+
+let selectedDifficulty = "all";
+
+let selectedCategory = "all";
+
+
+let playerName =
+localStorage.getItem("infoTracePlayerName") || "Player";
+
+
+let highScore =
+Number(
+localStorage.getItem("infoTraceHighScore")
+) || 0;
+
+
+let stats =
+JSON.parse(
+localStorage.getItem("infoTraceGameStats")
+) || {
+
+gamesPlayed: 0,
+questionsAnswered: 0,
+correctAnswers: 0,
+wrongAnswers: 0,
+totalPoints: 0,
+bestStreak: 0
+
+};
+
+
+let achievements =
+JSON.parse(
+localStorage.getItem("infoTraceAchievements")
+) || [];
+
+
+/* ================= SHUFFLE ================= */
+
+function shuffle(array) {
+
+let newArray = [...array];
+
+for (
+let i = newArray.length - 1;
+i > 0;
+i--
+) {
+
+let j =
+Math.floor(
+Math.random() * (i + 1)
+);
+
+[
+newArray[i],
+newArray[j]
+] = [
+newArray[j],
+newArray[i]
+];
+
+}
+
+return newArray;
+
+}
+
+
+/* ================= PLAYER ================= */
+
+function loadPlayerName() {
+
+document.getElementById("playerName").value =
+playerName;
+
+document.getElementById("welcomeName").innerText =
+playerName;
+
+document.getElementById("menuHighScore").innerText =
+highScore;
+
+}
+
+
+function savePlayerName() {
+
+let name =
+document.getElementById("playerName")
+.value
+.trim();
+
+if (name === "") {
+
+name = "Player";
+
+}
+
+playerName = name;
+
+localStorage.setItem(
+"infoTracePlayerName",
+playerName
+);
+
+document.getElementById("welcomeName").innerText =
+playerName;
+
+alert("Player name saved!");
+
+}
+
+
+/* ================= QUICK PLAY ================= */
+
+function startQuickPlay() {
+
+if (
+!window.infoTraceQuestions ||
+window.infoTraceQuestions.length === 0
+) {
+
+alert(
+"Questions could not be loaded. Check that questions.js is in the same folder."
+);
+
+return;
+
+}
+
+
+gameMode = "quick";
+
+
+selectedCategory =
+document.getElementById("category").value;
+
+
+selectedDifficulty =
+document.getElementById("difficulty").value;
+
+
+let questions =
+[...window.infoTraceQuestions];
+
+
+/* CATEGORY */
+
+if (selectedCategory !== "all") {
+
+questions =
+questions.filter(function(q) {
+
+return (
+String(q.category || "")
+.trim()
+.toLowerCase()
+===
+selectedCategory
+.trim()
+.toLowerCase()
+);
+
+});
+
+
+if (questions.length === 0) {
+
+alert(
+"There are no questions in the " +
+selectedCategory +
+" category yet."
+);
+
+return;
+
+}
+
+}
+
+
+/* DIFFICULTY */
+
+if (selectedDifficulty !== "all") {
+
+let difficultyQuestions =
+questions.filter(function(q) {
+
+return (
+String(q.difficulty || "")
+.trim()
+.toLowerCase()
+===
+selectedDifficulty
+.trim()
+.toLowerCase()
+);
+
+});
+
+
+if (difficultyQuestions.length > 0) {
+
+questions =
+difficultyQuestions;
+
+}
+
+}
+
+
+/* PICK 10 */
+
+gameQuestions =
+shuffle(questions).slice(0, 10);
+
+
+if (gameQuestions.length === 0) {
+
+alert("Not enough questions available.");
+
+return;
+
+}
+
+
+startGame();
+
+}
+
+
+/* ================= MY INFORMATION ================= */
+
+function startMyInformation() {
+
+let savedData =
+JSON.parse(
+localStorage.getItem("infoTraceData")
+) || [];
+
+
+if (savedData.length === 0) {
+
+alert(
+"You have no saved information yet. Add information to InfoTrace first."
+);
+
+return;
+
+}
+
+
+gameMode = "myInformation";
+
+
+gameQuestions =
+createInformationQuestions(savedData);
+
+
+gameQuestions =
+shuffle(gameQuestions)
+.slice(0, 10);
+
+
+if (gameQuestions.length === 0) {
+
+alert(
+"There is not enough information saved to create questions."
+);
+
+return;
+
+}
+
+
+startGame();
+
+}
+
+
+/* ================= MY INFORMATION QUESTIONS ================= */
+
+function createInformationQuestions(data) {
+
+let questions = [];
+
+
+data.forEach(function(item) {
+
+let title =
+item.title ||
+"this information";
+
+let source =
+String(item.source || "").trim();
+
+let reason =
+String(item.reason || "").trim();
+
+let location =
+String(item.location || "").trim();
+
+let problem =
+String(item.problem || "").trim();
+
+let keywords =
+String(item.keywords || "").trim();
+
+let notes =
+String(item.notes || "").trim();
+
+
+if (source !== "") {
+
+questions.push({
+
+question:
+'Where did you save "' +
+title +
+'" from?',
+
+correctText: source,
+
+answers:
+createAnswers(
+source,
+data.map(function(x) {
+
+return String(
+x.source || ""
+).trim();
+
+})
+)
+
+});
+
+}
+
+
+if (reason !== "") {
+
+questions.push({
+
+question:
+'Why did you save "' +
+title +
+'"?',
+
+correctText: reason,
+
+answers:
+createAnswers(
+reason,
+data.map(function(x) {
+
+return String(
+x.reason || ""
+).trim();
+
+})
+)
+
+});
+
+}
+
+
+if (location !== "") {
+
+questions.push({
+
+question:
+'Where did you find "' +
+title +
+'"?',
+
+correctText: location,
+
+answers:
+createAnswers(
+location,
+data.map(function(x) {
+
+return String(
+x.location || ""
+).trim();
+
+})
+)
+
+});
+
+}
+
+
+if (problem !== "") {
+
+questions.push({
+
+question:
+'What problem does "' +
+title +
+'" relate to?',
+
+correctText: problem,
+
+answers:
+createAnswers(
+problem,
+data.map(function(x) {
+
+return String(
+x.problem || ""
+).trim();
+
+})
+)
+
+});
+
+}
+
+
+if (keywords !== "") {
+
+questions.push({
+
+question:
+'Which keywords did you save for "' +
+title +
+'"?',
+
+correctText: keywords,
+
+answers:
+createAnswers(
+keywords,
+data.map(function(x) {
+
+return String(
+x.keywords || ""
+).trim();
+
+})
+)
+
+});
+
+}
+
+
+if (notes !== "") {
+
+questions.push({
+
+question:
+'What note did you record about "' +
+title +
+'"?',
+
+correctText: notes,
+
+answers:
+createAnswers(
+notes,
+data.map(function(x) {
+
+return String(
+x.notes || ""
+).trim();
+
+})
+)
+
+});
+
+}
+
+});
+
+
+return questions;
+
+}
+
+
+/* ================= CREATE ANSWERS ================= */
+
+function createAnswers(correct, allAnswers) {
+
+let cleaned =
+allAnswers.filter(function(answer) {
+
+return (
+answer !== "" &&
+answer !== correct
+);
+
+});
+
+
+let unique =
+[...new Set(cleaned)];
+
+
+let wrongAnswers =
+shuffle(unique).slice(0, 3);
+
+
+while (
+wrongAnswers.length < 3
+) {
+
+wrongAnswers.push(
+"None of the above"
+);
+
+}
+
+
+let answers =
+[
+correct,
+...wrongAnswers
+];
+
+
+return shuffle(answers);
+
+}
+
+
+/* ================= START GAME ================= */
+
+function startGame() {
+
+document.getElementById("menu")
+.classList
+.add("hidden");
+
+document.getElementById("result")
+.classList
+.add("hidden");
+
+document.getElementById("statistics")
+.classList
+.add("hidden");
+
+document.getElementById("achievements")
+.classList
+.add("hidden");
+
+document.getElementById("pauseScreen")
+.classList
+.add("hidden");
+
+document.getElementById("game")
+.classList
+.remove("hidden");
+
+
+currentQuestion = 0;
+
+score = 0;
+
+streak = 0;
+
+bestStreak = 0;
+
+level = 1;
+
+lives = 3;
+
+paused = false;
+
+answered = false;
+
+
+updateStatsDisplay();
+
+showQuestion();
+
+}
+
+
+/* ================= SHOW QUESTION ================= */
+
+function showQuestion() {
+
+clearInterval(timer);
+
+if (currentQuestion >= gameQuestions.length) {
+
+endGame();
+
+return;
+
+}
+
+
+answered = false;
+
+paused = false;
+
+timeLeft = 15;
+
+
+let q =
+gameQuestions[currentQuestion];
+
+
+document.getElementById("questionNumber")
+.innerText =
+"Question " +
+(currentQuestion + 1) +
+" of " +
+gameQuestions.length;
+
+
+document.getElementById("question")
+.innerText =
+q.question;
+
+
+document.getElementById("feedback")
+.innerText =
+"";
+
+
+document.getElementById("streakMessage")
+.innerText =
+"";
+
+
+document.getElementById("nextButton")
+.classList
+.add("hidden");
+
+
+document.getElementById("timer")
+.innerText =
+"⏱️ " +
+timeLeft;
+
+
+let answers =
+q.answers || [];
+
+
+let answerBox =
+document.getElementById("answers");
+
+
+answerBox.innerHTML = "";
+
+
+answers.forEach(function(answer, index) {
+
+let button =
+document.createElement("button");
+
+button.className =
+"answer";
+
+button.innerText =
+answer;
+
+button.onclick =
+function() {
+
+checkAnswer(
+index,
+button
+);
+
+};
+
+answerBox.appendChild(button);
+
+});
+
+
+updateStatsDisplay();
+
+startTimer();
+
+}
+
+
+/* ================= TIMER ================= */
+
+function startTimer() {
+
+clearInterval(timer);
+
+timer =
+setInterval(function() {
+
+if (paused || answered) {
+
+return;
+
+}
+
+
+timeLeft--;
+
+
+document.getElementById("timer")
+.innerText =
+"⏱️ " +
+timeLeft;
+
+
+if (timeLeft <= 0) {
+
+clearInterval(timer);
+
+timeUp();
+
+}
+
+}, 1000);
+
+}
+
+
+/* ================= TIME UP ================= */
+
+function timeUp() {
+
+if (answered) {
+
+return;
+
+}
+
+
+answered = true;
+
+lives--;
+
+streak = 0;
+
+stats.questionsAnswered++;
+
+stats.wrongAnswers++;
+
+saveStats();
+
+
+document.getElementById("feedback")
+.innerText =
+"⏰ Time's up!";
+
+
+document.getElementById("feedback")
+.style.color =
+"#e53935";
+
+
+document.getElementById("streakMessage")
+.innerText =
+"Streak lost";
+
+
+highlightCorrectAnswer();
+
+updateStatsDisplay();
+
+
+if (lives <= 0) {
+
+setTimeout(
+endGame,
+1200
+);
+
+} else {
+
+document.getElementById("nextButton")
+.classList
+.remove("hidden");
+
+}
+
+}
+
+
+/* ================= CHECK ANSWER ================= */
+
+function checkAnswer(selectedIndex, button) {
+
+if (answered) {
+
+return;
+
+}
+
+
+answered = true;
+
+clearInterval(timer);
+
+
+let q =
+gameQuestions[currentQuestion];
+
+
+let correctIndex;
+
+
+if (gameMode === "myInformation") {
+
+correctIndex =
+q.answers.indexOf(
+q.correctText
+);
+
+} else {
+
+correctIndex =
+q.correct;
+
+}
+
+
+let buttons =
+document.querySelectorAll(".answer");
+
+
+if (selectedIndex === correctIndex) {
+
+button.classList.add("correct");
+
+
+streak++;
+
+
+if (streak > bestStreak) {
+
+bestStreak = streak;
+
+}
+
+
+let points = 10;
+
+
+if (streak >= 5) {
+
+points = 20;
+
+}
+else if (streak >= 3) {
+
+points = 15;
+
+}
+
+
+score += points;
+
+
+level =
+Math.floor(score / 50) + 1;
+
+
+stats.questionsAnswered++;
+
+stats.correctAnswers++;
+
+stats.totalPoints += points;
+
+
+if (streak >= 3) {
+
+document.getElementById("streakMessage")
+.innerText =
+"🔥 " +
+streak +
+" question streak! +" +
+points +
+" points";
+
+}
+else {
+
+document.getElementById("streakMessage")
+.innerText =
+"✅ Correct! +" +
+points +
+" points";
+
+}
+
+
+document.getElementById("feedback")
+.innerText =
+"Correct!";
+
+
+document.getElementById("feedback")
+.style.color =
+"#2e7d32";
+
+
+}
+else {
+
+button.classList.add("wrong");
+
+
+lives--;
+
+streak = 0;
+
+
+stats.questionsAnswered++;
+
+stats.wrongAnswers++;
+
+
+document.getElementById("feedback")
+.innerText =
+"❌ Wrong answer!";
+
+
+document.getElementById("feedback")
+.style.color =
+"#e53935";
+
+
+document.getElementById("streakMessage")
+.innerText =
+"Streak lost";
+
+
+highlightCorrectAnswer();
+
+}
+
+
+saveStats();
+
+updateStatsDisplay();
+
+
+if (lives <= 0) {
+
+setTimeout(
+endGame,
+1200
+);
+
+} else {
+
+document.getElementById("nextButton")
+.classList
+.remove("hidden");
+
+}
+
+}
+  /* ================= HIGHLIGHT CORRECT ================= */
+
+function highlightCorrectAnswer() {
+
+let q =
+gameQuestions[currentQuestion];
+
+
+let correctText;
+
+
+if (gameMode === "myInformation") {
+
+correctText =
+q.correctText;
+
+}
+else {
+
+correctText =
+q.answers[q.correct];
+
+}
+
+
+let buttons =
+document.querySelectorAll(".answer");
+
+
+buttons.forEach(function(button) {
+
+if (
+button.innerText === correctText
+) {
+
+button.classList.add("correct");
+
+}
+
+});
+
+}
+
+
+/* ================= NEXT QUESTION ================= */
+
+function nextQuestion() {
+
+currentQuestion++;
+
+showQuestion();
+
+}
+
+
+/* ================= UPDATE DISPLAY ================= */
+
+function updateStatsDisplay() {
+
+document.getElementById("score")
+.innerText =
+score;
+
+
+document.getElementById("streak")
+.innerText =
+streak;
+
+
+document.getElementById("level")
+.innerText =
+level;
+
+
+let hearts = "";
+
+for (
+let i = 0;
+i < lives;
+i++
+) {
+
+hearts += "❤️";
+
+}
+
+
+document.getElementById("lives")
+.innerText =
+hearts || "💔";
+
+}
+
+
+/* ================= PAUSE ================= */
+
+function pauseGame() {
+
+if (answered) {
+
+return;
+
+}
+
+
+paused = true;
+
+clearInterval(timer);
+
+
+document.getElementById("game")
+.classList
+.add("hidden");
+
+document.getElementById("pauseScreen")
+.classList
+.remove("hidden");
+
+}
+
+
+/* ================= RESUME ================= */
+
+function resumeGame() {
+
+paused = false;
+
+
+document.getElementById("pauseScreen")
+.classList
+.add("hidden");
+
+document.getElementById("game")
+.classList
+.remove("hidden");
+
+
+startTimer();
+
+}
+
+
+/* ================= END GAME ================= */
+
+function endGame() {
+
+clearInterval(timer);
+
+
+stats.gamesPlayed++;
+
+
+if (
+bestStreak >
+stats.bestStreak
+) {
+
+stats.bestStreak =
+bestStreak;
+
+}
+
+
+saveStats();
+
+
+/* HIGH SCORE */
+
+let isNewHighScore = false;
+
+
+if (score > highScore) {
+
+highScore = score;
+
+localStorage.setItem(
+"infoTraceHighScore",
+highScore
+);
+
+isNewHighScore = true;
+
+}
+
+
+/* ACHIEVEMENTS */
+
+checkAchievements();
+
+
+document.getElementById("game")
+.classList
+.add("hidden");
+
+document.getElementById("result")
+.classList
+.remove("hidden");
+
+
+document.getElementById("resultPlayer")
+.innerText =
+playerName;
+
+
+document.getElementById("finalScore")
+.innerText =
+score;
+
+
+document.getElementById("finalLevel")
+.innerText =
+level;
+
+
+document.getElementById("finalStreak")
+.innerText =
+bestStreak;
+
+
+document.getElementById("finalLives")
+.innerText =
+lives;
+
+
+document.getElementById("finalQuestions")
+.innerText =
+gameQuestions.length;
+
+
+if (isNewHighScore) {
+
+document.getElementById("newHighScore")
+.innerHTML =
+"<p style='color:#2e7d32;font-weight:bold;'>🏆 NEW HIGH SCORE!</p>";
+
+}
+else {
+
+document.getElementById("newHighScore")
+.innerHTML =
+"<p>🏆 High Score: " +
+highScore +
+"</p>";
+
+}
+
+
+displayEarnedBadges();
+
+}
+
+
+/* ================= SAVE STATS ================= */
+
+function saveStats() {
+
+localStorage.setItem(
+"infoTraceGameStats",
+JSON.stringify(stats)
+);
+
+}
+
+
+/* ================= MENU ================= */
+
+function showMenu() {
+
+clearInterval(timer);
+
+
+document.getElementById("game")
+.classList
+.add("hidden");
+
+document.getElementById("result")
+.classList
+.add("hidden");
+
+document.getElementById("statistics")
+.classList
+.add("hidden");
+
+document.getElementById("achievements")
+.classList
+.add("hidden");
+
+document.getElementById("pauseScreen")
+.classList
+.add("hidden");
+
+document.getElementById("menu")
+.classList
+.remove("hidden");
+
+
+document.getElementById("menuHighScore")
+.innerText =
+highScore;
+
+
+document.getElementById("welcomeName")
+.innerText =
+playerName;
+
+}
+
+
+/* ================= PLAY AGAIN ================= */
+
+function playAgain() {
+
+if (gameMode === "myInformation") {
+
+startMyInformation();
+
+}
+else {
+
+startQuickPlay();
+
+}
+
+}
+
+
+/* ================= STATISTICS ================= */
+
+function showStatistics() {
+
+clearInterval(timer);
+
+
+document.getElementById("menu")
+.classList
+.add("hidden");
+
+document.getElementById("game")
+.classList
+.add("hidden");
+
+document.getElementById("result")
+.classList
+.add("hidden");
+
+document.getElementById("achievements")
+.classList
+.add("hidden");
+
+document.getElementById("pauseScreen")
+.classList
+.add("hidden");
+
+document.getElementById("statistics")
+.classList
+.remove("hidden");
+
+
+let total =
+stats.questionsAnswered;
+
+
+let accuracy = 0;
+
+
+if (total > 0) {
+
+accuracy =
+Math.round(
+(stats.correctAnswers / total) * 100
+);
+
+}
+
+
+document.getElementById("statPlayer")
+.innerText =
+playerName;
+
+
+document.getElementById("gamesPlayed")
+.innerText =
+stats.gamesPlayed;
+
+
+document.getElementById("questionsAnswered")
+.innerText =
+stats.questionsAnswered;
+
+
+document.getElementById("correctAnswers")
+.innerText =
+stats.correctAnswers;
+
+
+document.getElementById("wrongAnswers")
+.innerText =
+stats.wrongAnswers;
+
+
+document.getElementById("accuracy")
+.innerText =
+accuracy + "%";
+
+
+document.getElementById("totalPoints")
+.innerText =
+stats.totalPoints;
+
+
+document.getElementById("statBestStreak")
+.innerText =
+stats.bestStreak;
+
+
+document.getElementById("statHighScore")
+.innerText =
+highScore;
+
+}
+
+
+/* ================= RESET STATISTICS ================= */
+
+function resetStatistics() {
+
+let confirmReset =
+confirm(
+"Are you sure you want to reset your game statistics?"
+);
+
+
+if (!confirmReset) {
+
+return;
+
+}
+
+
+stats = {
+
+gamesPlayed: 0,
+questionsAnswered: 0,
+correctAnswers: 0,
+wrongAnswers: 0,
+totalPoints: 0,
+bestStreak: 0
+
+};
+
+
+localStorage.setItem(
+"infoTraceGameStats",
+JSON.stringify(stats)
+);
+
+
+alert(
+"Your statistics have been reset."
+);
+
+
+showStatistics();
+
+}
+
+
+/* ================= ACHIEVEMENTS ================= */
+
+function checkAchievements() {
+
+let unlocked = [];
+
+
+/* First Game */
+
+if (
+stats.gamesPlayed >= 1
+) {
+
+unlocked.push("🎮 First Game");
+
+}
+
+
+/* Ten Games */
+
+if (
+stats.gamesPlayed >= 10
+) {
+
+unlocked.push("🎮 Game Regular");
+
+}
+
+
+/* Fifty Games */
+
+if (
+stats.gamesPlayed >= 50
+) {
+
+unlocked.push("🏆 Game Master");
+
+}
+
+
+/* 100 Correct */
+
+if (
+stats.correctAnswers >= 100
+) {
+
+unlocked.push("🎯 Knowledge Hunter");
+
+}
+
+
+/* 500 Correct */
+
+if (
+stats.correctAnswers >= 500
+) {
+
+unlocked.push("🧠 Knowledge Expert");
+
+}
+
+
+/* 5 Streak */
+
+if (
+stats.bestStreak >= 5
+) {
+
+unlocked.push("🔥 Hot Streak");
+
+}
+
+
+/* 10 Streak */
+
+if (
+stats.bestStreak >= 10
+) {
+
+unlocked.push("🔥🔥 Unstoppable");
+
+}
+
+
+/* 100 Points */
+
+if (
+stats.totalPoints >= 100
+) {
+
+unlocked.push("⭐ Point Collector");
+
+}
+
+
+/* 500 Points */
+
+if (
+stats.totalPoints >= 500
+) {
+
+unlocked.push("⭐ Point Master");
+
+}
+
+
+/* High Score */
+
+if (
+highScore >= 100
+) {
+
+unlocked.push("🏆 High Scorer");
+
+}
+
+
+achievements =
+[...new Set(unlocked)];
+
+
+localStorage.setItem(
+"infoTraceAchievements",
+JSON.stringify(achievements)
+);
+
+}
+
+
+/* ================= DISPLAY ACHIEVEMENTS ================= */
+
+function showAchievements() {
+
+clearInterval(timer);
+
+
+document.getElementById("menu")
+.classList
+.add("hidden");
+
+document.getElementById("game")
+.classList
+.add("hidden");
+
+document.getElementById("result")
+.classList
+.add("hidden");
+
+document.getElementById("statistics")
+.classList
+.add("hidden");
+
+document.getElementById("pauseScreen")
+.classList
+.add("hidden");
+
+document.getElementById("achievements")
+.classList
+.remove("hidden");
+
+
+checkAchievements();
+
+
+let badgeList =
+document.getElementById("badgeList");
+
+
+badgeList.innerHTML = "";
+
+
+let allBadges = [
+
+{
+name: "🎮 First Game",
+description: "Play your first game."
+},
+
+{
+name: "🎮 Game Regular",
+description: "Play 10 games."
+},
+
+{
+name: "🏆 Game Master",
+description: "Play 50 games."
+},
+
+{
+name: "🎯 Knowledge Hunter",
+description: "Answer 100 questions correctly."
+},
+
+{
+name: "🧠 Knowledge Expert",
+description: "Answer 500 questions correctly."
+},
+
+{
+name: "🔥 Hot Streak",
+description: "Reach a 5-question streak."
+},
+
+{
+name: "🔥🔥 Unstoppable",
+description: "Reach a 10-question streak."
+},
+
+{
+name: "⭐ Point Collector",
+description: "Earn 100 total points."
+},
+
+{
+name: "⭐ Point Master",
+description: "Earn 500 total points."
+},
+
+{
+name: "🏆 High Scorer",
+description: "Reach a high score of 100."
+}
+
+];
+
+
+allBadges.forEach(function(badge) {
+
+let div =
+document.createElement("div");
+
+
+div.className =
+"achievement";
+
+
+if (
+achievements.includes(
+badge.name
+)
+) {
+
+div.innerHTML =
+"<strong>" +
+badge.name +
+"</strong><br>" +
+badge.description +
+"<br>✅ Unlocked";
+
+}
+else {
+
+div.classList.add("locked");
+
+div.innerHTML =
+"<strong>" +
+badge.name +
+"</strong><br>" +
+badge.description +
+"<br>🔒 Locked";
+
+}
+
+
+badgeList.appendChild(div);
+
+});
+
+}
+
+
+/* ================= RESULT BADGES ================= */
+
+function displayEarnedBadges() {
+
+let box =
+document.getElementById("earnedBadges");
+
+
+box.innerHTML = "";
+
+
+if (
+achievements.length === 0
+) {
+
+return;
+
+}
+
+
+let title =
+document.createElement("p");
+
+
+title.innerHTML =
+"<strong>🏅 Achievements Unlocked</strong>";
+
+
+box.appendChild(title);
+
+
+achievements.forEach(function(badge) {
+
+let item =
+document.createElement("p");
+
+item.innerText =
+badge;
+
+box.appendChild(item);
+
+});
+
+}
+
+
+/* ================= DASHBOARD ================= */
+
+function goBack() {
+
+window.location.href =
+"dashboard.html";
+
+}
+
+
+/* ================= INITIALIZE ================= */
+
+loadPlayerName();
+
+</script>
+
+</body>
+
+</html>

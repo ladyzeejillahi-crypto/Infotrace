@@ -1,0 +1,289 @@
+/* INFOTRACE NEW DESIGN */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7f6;
+    color: #222;
+}
+
+
+/* HEADER */
+
+header {
+    background: #1f5c4a;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+header p {
+    margin: 8px 0 0;
+    font-size: 15px;
+}
+
+
+/* MAIN AREA */
+
+main {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 15px;
+}
+
+
+/* DASHBOARD */
+
+.dashboard {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+
+.dashboard h2 {
+    margin-top: 0;
+    color: #1f5c4a;
+}
+
+
+.intro {
+    color: #666;
+}
+
+
+/* STAT BOXES */
+
+.stats {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin: 25px 0;
+}
+
+
+.stat-box {
+    flex: 1;
+    min-width: 150px;
+    background: #eef6f3;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+
+.stat-box h3 {
+    margin: 0 0 10px;
+    color: #1f5c4a;
+}
+
+
+.stat-box p {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+}
+
+
+/* MENU */
+
+.menu {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 25px;
+}
+
+
+.menu-button,
+.main-button,
+.start-button {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    background: #1f5c4a;
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+
+.menu-button:hover,
+.main-button:hover,
+.start-button:hover {
+    opacity: 0.9;
+}
+
+
+/* FORMS */
+
+form {
+    margin-top: 20px;
+}
+
+
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+
+input,
+textarea,
+select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #1f5c4a;
+}
+
+
+/* INFORMATION CARDS */
+
+.info-card {
+    background: #fff;
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 12px;
+    border-left: 5px solid #1f5c4a;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+}
+
+
+.info-card h3 {
+    margin-top: 0;
+    color: #1f5c4a;
+}
+
+
+.information-title {
+    color: #1f5c4a;
+    text-decoration: none;
+}
+
+
+.information-title:hover {
+    text-decoration: underline;
+}
+
+
+/* INFORMATION DETAILS */
+
+.context-line {
+    background: #f7f9f8;
+    padding: 15px;
+    margin: 12px 0;
+    border-radius: 8px;
+}
+
+
+.context-line strong {
+    color: #1f5c4a;
+}
+
+
+.context-line p {
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+
+/* BUTTONS */
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+
+.delete-button {
+    background: #b83232;
+    color: white;
+    border: none;
+    padding: 14px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+
+.delete-button:hover {
+    opacity: 0.9;
+}
+
+
+/* SEARCH */
+
+#searchBox {
+    margin-bottom: 20px;
+}
+
+
+#searchResults {
+    margin-top: 20px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    main {
+        margin: 15px auto;
+    }
+
+
+    .dashboard {
+        padding: 18px;
+    }
+
+
+    .menu {
+        grid-template-columns: 1fr;
+    }
+
+
+    .stats {
+        flex-direction: column;
+    }
+
+
+    .stat-box {
+        min-width: auto;
+    }
+
+
+    header h1 {
+        font-size: 25px;
+    }
+
+}

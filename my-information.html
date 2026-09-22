@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Information - InfoTrace</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>InfoTrace</h1>
+
+        <p>My Saved Information</p>
+
+    </header>
+
+
+    <main>
+
+        <section class="dashboard">
+
+            <h2>My Information</h2>
+
+            <p class="intro">
+                View all the information you have saved.
+            </p>
+
+
+            <div id="myInformationList">
+
+                <p>Loading information...</p>
+
+            </div>
+
+
+            <br>
+
+
+            <a
+                href="dashboard.html"
+                class="start-button"
+            >
+                ← Back to Dashboard
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        const informationList =
+            document.getElementById(
+                "myInformationList"
+            );
+
+
+        let savedInformation =
+            JSON.parse(
+                localStorage.getItem(
+                    "infoTraceData"
+                )
+            );
+
+
+        if (!Array.isArray(savedInformation)) {
+
+            savedInformation = [];
+
+        }
+
+
+        if (savedInformation.length === 0) {
+
+            informationList.innerHTML =
+                "<p>No information has been saved yet.</p>";
+
+        } else {
+
+            informationList.innerHTML = "";
+
+
+            savedInformation.forEach(
+                function(item, index) {
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "info-card";
+
+
+                    const title =
+                        document.createElement(
+                            "h3"
+                        );
+
+
+                    const link =
+                        document.createElement(
+                            "a"
+                        );
+
+
+                    link.href =
+                        "information.html";
+
+
+                    link.textContent =
+                        item.title ||
+                        "Untitled";
+
+
+                    link.className =
+                        "information-title";
+
+
+                    link.addEventListener(
+                        "click",
+                        function() {
+
+                            localStorage.setItem(
+                                "selectedInfoIndex",
+                                index
+                            );
+
+                        }
+                    );
+
+
+                    title.appendChild(
+                        link
+                    );
+
+
+                    const source =
+                        document.createElement(
+                            "p"
+                        );
+
+
+                    source.textContent =
+                        "Source: " +
+                        (
+                            item.source ||
+                            "Not provided"
+                        );
+
+
+                    const keywords =
+                        document.createElement(
+                            "p"
+                        );
+
+
+                    keywords.textContent =
+                        "Keywords: " +
+                        (
+                            item.keywords ||
+                            "Not provided"
+                        );
+
+
+                    const used =
+                        document.createElement(
+                            "p"
+                        );
+
+
+                    used.textContent =
+                        "Used: " +
+                        (
+                            item.used ||
+                            "Not specified"
+                        );
+
+
+                    const date =
+                        document.createElement(
+                            "p"
+                        );
+
+
+                    date.textContent =
+                        "Saved on: " +
+                        (
+                            item.date ||
+                            "Not available"
+                        );
+
+
+                    card.appendChild(
+                        title
+                    );
+
+                    card.appendChild(
+                        source
+                    );
+
+                    card.appendChild(
+                        keywords
+                    );
+
+                    card.appendChild(
+                        used
+                    );
+
+                    card.appendChild(
+                        date
+                    );
+
+
+                    informationList.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+
+    </script>
+
+</body>
+
+</html>

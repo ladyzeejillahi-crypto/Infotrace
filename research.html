@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Research Discovery - InfoTrace</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="design.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f8f5;
+            color: #173b2b;
+        }
+
+        .research-container {
+            width: 92%;
+            max-width: 900px;
+            margin: 30px auto;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            background: #ffffff;
+            color: #176b45;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #d8e5dd;
+            font-weight: bold;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .intro {
+            color: #60776b;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .research-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #244b38;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px;
+            border: 1px solid #ccdcd2;
+            border-radius: 9px;
+            font-size: 16px;
+            margin-bottom: 18px;
+            background: #ffffff;
+            color: #173b2b;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #248557;
+            box-shadow: 0 0 0 3px rgba(36,133,87,0.12);
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #176b45;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            background: #125738;
+        }
+
+        .search-btn:disabled {
+            background: #8da99a;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 15px;
+            color: #60776b;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .results-title {
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 13px;
+            margin-bottom: 15px;
+            border: 1px solid #dce8e1;
+        }
+
+        .result-card h3 {
+            margin-top: 0;
+            color: #176b45;
+            line-height: 1.4;
+        }
+
+        .authors {
+            color: #4f665a;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .publication {
+            color: #60776b;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .abstract {
+            line-height: 1.6;
+            color: #30483b;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .source-btn,
+        .save-btn {
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        .source-btn {
+            background: #edf5f0;
+            color: #176b45;
+        }
+
+        .save-btn {
+            background: #176b45;
+            color: white;
+        }
+
+        .empty {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            color: #60776b;
+        }
+
+        .note {
+            background: #f0f7f3;
+            border-left: 4px solid #176b45;
+            padding: 13px;
+            margin-top: 20px;
+            color: #496155;
+            line-height: 1.5;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .research-container {
+                width: 94%;
+            }
+
+            .research-card {
+                padding: 18px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="research-container">
+
+    <div class="top-bar">
+        <a href="dashboard.html" class="back-btn">← Back</a>
+
+        <div>
+            <h1 class="page-title">🔎 Research Discovery</h1>
+        </div>
+    </div>
+
+    <p class="intro">
+        Search for academic research related to your topic and find papers
+        that may be useful for your assignment, project or literature review.
+    </p>
+
+    <div class="research-card">
+
+        <label for="researchTopic">
+            Research Topic
+        </label>
+
+        <input
+            type="text"
+            id="researchTopic"
+            placeholder="e.g. Information literacy and academic performance"
+        >
+
+        <label for="researchNeed">
+            What information are you looking for?
+        </label>
+
+        <textarea
+            id="researchNeed"
+            placeholder="e.g. Points explaining how information literacy affects academic performance among undergraduate students."
+        ></textarea>
+
+        <label for="researchSection">
+            Where will you use it?
+        </label>
+
+        <select id="researchSection">
+
+            <option value="Literature Review">
+                Literature Review
+            </option>
+
+            <option value="Introduction">
+                Introduction
+            </option>
+
+            <option value="Problem Statement">
+                Problem Statement
+            </option>
+
+            <option value="Discussion">
+                Discussion
+            </option>
+
+            <option value="General Research">
+                General Research
+            </option>
+
+        </select>
+
+        <button
+            type="button"
+            class="search-btn"
+            id="searchButton"
+        >
+            🔍 Search Academic Sources
+        </button>
+
+        <div id="status" class="status"></div>
+
+        <div class="note">
+            <strong>How it works:</strong>
+            Enter your research topic and explain the specific information
+            you need. InfoTrace will search academic sources and display
+            relevant research that you can review and save.
+        </div>
+
+    </div>
+
+    <div id="resultsSection"></div>
+
+</div>
+
+<script>
+
+    const searchButton = document.getElementById("searchButton");
+    const topicInput = document.getElementById("researchTopic");
+    const needInput = document.getElementById("researchNeed");
+    const sectionInput = document.getElementById("researchSection");
+    const statusBox = document.getElementById("status");
+    const resultsSection = document.getElementById("resultsSection");
+
+
+    searchButton.addEventListener("click", searchResearch);
+
+
+    async function searchResearch() {
+
+        const topic = topicInput.value.trim();
+        const need = needInput.value.trim();
+        const section = sectionInput.value;
+
+        if (!topic) {
+
+            alert("Please enter your research topic.");
+
+            topicInput.focus();
+
+            return;
+        }
+
+
+        searchButton.disabled = true;
+
+        searchButton.textContent = "🔄 Searching...";
+
+        statusBox.textContent =
+            "Searching academic sources. Please wait...";
+
+        resultsSection.innerHTML = "";
+
+
+        try {
+
+            const searchQuery = need
+                ? topic + " " + need
+                : topic;
+
+
+            /*
+             * This sends the search request to the Netlify
+             * serverless function that we will create next.
+             */
+
+            const response = await fetch(
+                "/.netlify/functions/research-search?q="
+                + encodeURIComponent(searchQuery)
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "The research search service could not be reached."
+                );
+
+            }
+
+
+            const data = await response.json();
+
+
+            if (!data || !data.papers || data.papers.length === 0) {
+
+                statusBox.textContent =
+                    "No academic results were found. Try different keywords.";
+
+                resultsSection.innerHTML = `
+                    <div class="empty">
+                        No research results found.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            statusBox.textContent =
+                "Found " + data.papers.length +
+                " academic result(s).";
+
+
+            displayResults(
+                data.papers,
+                topic,
+                need,
+                section
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            statusBox.textContent =
+                "Something went wrong while searching.";
+
+            resultsSection.innerHTML = `
+                <div class="empty">
+                    <strong>Search could not be completed.</strong>
+                    <br><br>
+                    The academic search service has not been connected yet.
+                    We will connect it in the next step.
+                </div>
+            `;
+
+        } finally {
+
+            searchButton.disabled = false;
+
+            searchButton.textContent =
+                "🔍 Search Academic Sources";
+
+        }
+
+    }
+
+
+    function displayResults(
+        papers,
+        topic,
+        need,
+        section
+    ) {
+
+        resultsSection.innerHTML = `
+            <h2 class="results-title">
+                📚 Academic Research Results
+            </h2>
+        `;
+
+
+        papers.forEach(function(paper) {
+
+            const card = document.createElement("div");
+
+            card.className = "result-card";
+
+
+            const title =
+                paper.title || "Untitled research paper";
+
+
+            const authors =
+                paper.authors || "Author information unavailable";
+
+
+            const year =
+                paper.year || "Year unavailable";
+
+
+            const journal =
+                paper.journal || "Publication information unavailable";
+
+
+            const abstract =
+                paper.abstract ||
+                "No abstract was available for this paper.";
+
+
+            const url =
+                paper.url || "#";
+
+
+            card.innerHTML = `
+
+                <h3>
+                    ${escapeHTML(title)}
+                </h3>
+
+                <div class="authors">
+                    <strong>Authors:</strong>
+                    ${escapeHTML(authors)}
+                </div>
+
+                <div class="publication">
+                    <strong>Year:</strong>
+                    ${escapeHTML(String(year))}
+                    <br>
+
+                    <strong>Publication:</strong>
+                    ${escapeHTML(journal)}
+                </div>
+
+                <div class="abstract">
+                    <strong>Abstract:</strong>
+                    <br>
+                    ${escapeHTML(abstract)}
+                </div>
+
+                <div class="result-actions">
+
+                    ${
+                        url !== "#"
+                        ?
+                        `
+                        <a
+                            href="${escapeAttribute(url)}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="source-btn"
+                        >
+                            🔗 View Source
+                        </a>
+                        `
+                        :
+                        ""
+                    }
+
+                    <button
+                        type="button"
+                        class="save-btn"
+                        data-title="${escapeAttribute(title)}"
+                        data-abstract="${escapeAttribute(abstract)}"
+                        data-authors="${escapeAttribute(authors)}"
+                        data-year="${escapeAttribute(String(year))}"
+                        data-journal="${escapeAttribute(journal)}"
+                        data-url="${escapeAttribute(url)}"
+                    >
+                        💾 Save to InfoTrace
+                    </button>
+
+                </div>
+            `;
+
+
+            resultsSection.appendChild(card);
+
+
+            const saveButton =
+                card.querySelector(".save-btn");
+
+
+            saveButton.addEventListener(
+                "click",
+                function() {
+
+                    saveResearch(
+                        title,
+                        abstract,
+                        authors,
+                        year,
+                        journal,
+                        url,
+                        topic,
+                        need,
+                        section
+                    );
+
+                }
+            );
+
+        });
+
+    }
+
+
+    function saveResearch(
+        title,
+        abstract,
+        authors,
+        year,
+        journal,
+        url,
+        topic,
+        need,
+        section
+    ) {
+
+        let savedInformation = [];
+
+
+        try {
+
+            const existing =
+                localStorage.getItem("infoTraceData");
+
+
+            if (existing) {
+
+                savedInformation =
+                    JSON.parse(existing);
+
+            }
+
+            if (!Array.isArray(savedInformation)) {
+
+                savedInformation = [];
+
+            }
+
+        } catch (error) {
+
+            savedInformation = [];
+
+        }
+
+
+        const newInformation = {
+
+            id: Date.now(),
+
+            title: title,
+
+            information: abstract,
+
+            source:
+                authors +
+                " (" +
+                year +
+                "). " +
+                title,
+
+            location:
+                journal,
+
+            reason:
+                need ||
+                "Saved for research.",
+
+            problem:
+                topic,
+
+            keywords:
+                topic,
+
+            used:
+                "No",
+
+            usage:
+                section,
+
+            notes:
+                "Academic source found through InfoTrace Research Discovery." +
+                (url !== "#"
+                    ? " Source: " + url
+                    : ""),
+
+            date:
+                new Date().toLocaleString()
+
+        };
+
+
+        savedInformation.push(
+            newInformation
+        );
+
+
+        localStorage.setItem(
+            "infoTraceData",
+            JSON.stringify(savedInformation)
+        );
+
+
+        alert(
+            "Research information saved to My Information."
+        );
+
+    }
+
+
+    function escapeHTML(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    function escapeAttribute(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+
+    }
+
+</script>
+
+</body>
+</html>

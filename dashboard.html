@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - InfoTrace</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+
+        const isLoggedIn =
+            localStorage.getItem("infoTraceLoggedIn");
+
+        if (isLoggedIn !== "true") {
+
+            window.location.href = "login.html";
+
+        }
+
+    </script>
+
+</head>
+
+
+<body>
+
+
+    <header>
+
+        <h1>InfoTrace</h1>
+
+        <p>Your Personal Research Information Dashboard</p>
+
+    </header>
+
+
+    <main>
+
+        <section class="dashboard">
+
+
+            <h2>Welcome to InfoTrace</h2>
+
+
+            <p class="intro">
+
+                Organize, track and manage the information
+                you collect for your research.
+
+            </p>
+
+
+            <div class="stats">
+
+
+                <div class="stat-box">
+
+                    <h3>Saved Information</h3>
+
+                    <p id="savedCount">
+                        0
+                    </p>
+
+                </div>
+
+
+                <div class="stat-box">
+
+                    <h3>Used</h3>
+
+                    <p id="usedCount">
+                        0
+                    </p>
+
+                </div>
+
+
+                <div class="stat-box">
+
+                    <h3>Unused</h3>
+
+                    <p id="unusedCount">
+                        0
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <a
+                href="add-information.html"
+                class="main-button"
+            >
+
+                ➕ Add Research Information
+
+            </a>
+
+
+            <div class="menu">
+
+
+                <a
+                    href="my-information.html"
+                    class="menu-button"
+                >
+
+                    📚 My Information
+
+                </a>
+
+
+                <a
+                    href="search.html"
+                    class="menu-button"
+                >
+
+                    🔍 Search Information
+
+                </a>
+
+
+                <a
+                    href="history.html"
+                    class="menu-button"
+                >
+
+                    🕒 Information History
+
+                </a>
+
+
+                <a
+                    href="games.html"
+                    class="menu-button"
+                >
+
+                    🎮 InfoTrace Games
+
+                </a>
+              <a href="research.html" class="menu-item">
+    <span>🔎</span>
+    <div>
+        <strong>Research Discovery</strong>
+        <small>Find academic information and references</small>
+    </div>
+              </a>
+
+
+            </div>
+
+
+            <br>
+
+
+            <button
+                id="logoutButton"
+                class="delete-button"
+            >
+
+                🚪 Logout
+
+            </button>
+
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+
+        const savedInformation =
+
+            JSON.parse(
+
+                localStorage.getItem(
+                    "infoTraceData"
+                )
+
+            ) || [];
+
+
+        const savedCount =
+            document.getElementById(
+                "savedCount"
+            );
+
+
+        const usedCount =
+            document.getElementById(
+                "usedCount"
+            );
+
+
+        const unusedCount =
+            document.getElementById(
+                "unusedCount"
+            );
+
+
+        savedCount.textContent =
+            savedInformation.length;
+
+
+        let used = 0;
+
+
+        savedInformation.forEach(
+
+            function(item) {
+
+                if (
+                    item.used &&
+                    item.used.toLowerCase() === "yes"
+                ) {
+
+                    used++;
+
+                }
+
+            }
+
+        );
+
+
+        usedCount.textContent =
+            used;
+
+
+        unusedCount.textContent =
+            savedInformation.length - used;
+
+
+        const logoutButton =
+            document.getElementById(
+                "logoutButton"
+            );
+
+
+        logoutButton.addEventListener(
+
+            "click",
+
+            function() {
+
+
+                const confirmLogout =
+
+                    confirm(
+                        "Are you sure you want to logout?"
+                    );
+
+
+                if (!confirmLogout) {
+
+                    return;
+
+                }
+
+
+                localStorage.removeItem(
+                    "infoTraceLoggedIn"
+                );
+
+
+                window.location.href =
+                    "login.html";
+
+
+            }
+
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
