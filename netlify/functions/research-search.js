@@ -1,1114 +1,628 @@
-<!DOCTYPE html>
-<html lang="en">
+const {
+    extractText,
+    getDocumentProxy
+} = require("unpdf");
 
-<head>
 
-    <meta charset="UTF-8">
+exports.handler = async function(event) {
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    try {
 
-    <title>Research Discovery - InfoTrace</title>
+        const query =
+            event.queryStringParameters &&
+            event.queryStringParameters.q
+                ? event.queryStringParameters.q.trim()
+                : "";
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
 
-    <link
-        rel="stylesheet"
-        href="design.css"
-    >
+        if (!query) {
 
-    <style>
+            return {
+                statusCode: 400,
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f8f5;
-            color: #173b2b;
-        }
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-        .research-container {
-            width: 92%;
-            max-width: 1000px;
-            margin: 30px auto;
-        }
-
-        .top-bar {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .back-btn {
-            text-decoration: none;
-            background: white;
-            color: #176b45;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            border: 1px solid #dce9df;
-        }
-
-        .intro {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .intro h1 {
-            margin-top: 0;
-            color: #176b45;
-        }
-
-        .search-box {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-top: 15px;
-            margin-bottom: 7px;
-        }
-
-        input,
-        textarea,
-        select {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 12px;
-            border: 1px solid #cfded4;
-            border-radius: 8px;
-            font-size: 15px;
-        }
-
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .search-btn {
-            margin-top: 20px;
-            width: 100%;
-            padding: 13px;
-            border: none;
-            border-radius: 8px;
-            background: #176b45;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .search-btn:disabled {
-            background: #8aa99a;
-            cursor: not-allowed;
-        }
-
-        #status {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 8px;
-            display: none;
-        }
-
-        .loading {
-            background: #eef6f1;
-            color: #176b45;
-            display: block !important;
-        }
-
-        .error {
-            background: #fff0f0;
-            color: #a12626;
-            display: block !important;
-        }
-
-        .results {
-            margin-top: 25px;
-        }
-
-        .paper {
-            background: white;
-            padding: 22px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .paper h2 {
-            margin-top: 0;
-            color: #176b45;
-        }
-
-        .paper-meta {
-            color: #66776d;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .abstract {
-            margin-top: 15px;
-            line-height: 1.6;
-        }
-
-        .requested {
-            margin-top: 20px;
-            padding: 18px;
-            background: #f0f8f3;
-            border-left: 4px solid #176b45;
-            border-radius: 6px;
-        }
-
-        .requested h3 {
-            margin-top: 0;
-            color: #176b45;
-        }
-
-        .extracted-text {
-            white-space: pre-wrap;
-            line-height: 1.7;
-        }
-
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .action-btn {
-            display: inline-block;
-            padding: 10px 14px;
-            border-radius: 7px;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .source-btn {
-            background: #eaf3ed;
-            color: #176b45;
-        }
-
-        .download-btn {
-            background: #176b45;
-            color: white;
-        }
-
-        .save-btn {
-            background: #dcefe3;
-            color: #176b45;
-        }
-
-        .unavailable {
-            background: #fff8e8;
-            border-left: 4px solid #d69e2e;
-            padding: 15px;
-            margin-top: 15px;
-            border-radius: 6px;
-        }
-
-        .no-results {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        @media (max-width: 600px) {
-
-            .research-container {
-                width: 94%;
-            }
-
-            .actions {
-                flex-direction: column;
-            }
-
-            .action-btn {
-                text-align: center;
-            }
+                body: JSON.stringify({
+                    error: "Search query is required."
+                })
+            };
 
         }
 
-    </style>
 
-</head>
-
-
-<body>
-
-
-<div class="research-container">
-
-
-    <div class="top-bar">
-
-        <a
-            href="dashboard.html"
-            class="back-btn"
-        >
-            ← Dashboard
-        </a>
-
-    </div>
-
-
-    <div class="intro">
-
-        <h1>
-            🔎 Research Discovery
-        </h1>
-
-        <p>
-            Search academic research, read accessible full-text papers,
-            find the information you need, and save useful findings
-            directly to InfoTrace.
-        </p>
-
-        <p>
-            The system will try to find an accessible PDF. If the full
-            document is available, InfoTrace will read the document and
-            search it for the information you requested.
-        </p>
-
-    </div>
-
-
-    <div class="search-box">
-
-        <label for="researchTopic">
-            Research Topic
-        </label>
-
-        <input
-            type="text"
-            id="researchTopic"
-            placeholder="e.g. Information literacy and academic performance among undergraduates"
-        >
-
-
-        <label for="researchNeed">
-            What exactly do you want from the research?
-        </label>
-
-        <textarea
-            id="researchNeed"
-            placeholder="e.g. Find the effects of information literacy on academic performance."
-        ></textarea>
-
-
-        <label for="researchSection">
-            Where will you use the information?
-        </label>
-
-        <input
-            type="text"
-            id="researchSection"
-            placeholder="e.g. Literature Review"
-        >
-
-
-        <button
-            type="button"
-            class="search-btn"
-            id="searchButton"
-        >
-            🔍 Search, Read & Extract
-        </button>
-
-
-        <div id="status"></div>
-
-    </div>
-
-
-    <div
-        id="results"
-        class="results"
-    ></div>
-
-
-</div>
-
-
-<script>
-
-    const searchButton =
-        document.getElementById(
-            "searchButton"
-        );
-
-
-    const statusBox =
-        document.getElementById(
-            "status"
-        );
-
-
-    const results =
-        document.getElementById(
-            "results"
-        );
-
-
-    searchButton.addEventListener(
-        "click",
-        searchResearch
-    );
-
-
-    async function searchResearch() {
-
-        const topic =
-            document.getElementById(
-                "researchTopic"
-            ).value.trim();
-
-
-        const need =
-            document.getElementById(
-                "researchNeed"
-            ).value.trim();
-
-
-        const section =
-            document.getElementById(
-                "researchSection"
-            ).value.trim();
-
-
-        if (
-            !topic ||
-            !need
-        ) {
-
-            showError(
-                "Please enter the research topic and what you want to find."
-            );
-
-            return;
-
-        }
-
-
-        searchButton.disabled =
-            true;
-
-
-        searchButton.innerText =
-            "🔎 Searching and reading...";
-
-
-        results.innerHTML =
-            "";
-
-
-        showLoading(
-            "Searching academic sources and checking available full-text papers..."
-        );
-
+        /*
+        =====================================================
+        SEARCH 1 — SEMANTIC SCHOLAR
+        =====================================================
+        */
 
         try {
 
-            const response =
-                await fetch(
-                    "/.netlify/functions/research-search?q=" +
-                    encodeURIComponent(topic)
-                );
+            const semanticURL =
+                "https://api.semanticscholar.org/graph/v1/paper/search" +
+                "?query=" +
+                encodeURIComponent(query) +
+                "&limit=10" +
+                "&fields=" +
+                "title,authors,year,abstract,journal,url,externalIds,openAccessPdf";
 
 
-            const data =
-                await response.json();
+            const semanticResponse =
+                await fetch(semanticURL);
 
 
-            if (
-                !response.ok
-            ) {
+            if (semanticResponse.ok) {
 
-                throw new Error(
-                    data.error ||
-                    "Academic search failed."
-                );
+                const data =
+                    await semanticResponse.json();
 
-            }
 
+                const papers =
+                    (data.data || [])
+                        .map(function(paper) {
 
-            hideStatus();
+                            const authors =
+                                (paper.authors || [])
+                                    .map(function(author) {
+                                        return author.name;
+                                    })
+                                    .join(", ");
 
 
-            if (
-                !data.papers ||
-                data.papers.length === 0
-            ) {
+                            let sourceUrl =
+                                paper.url || "";
 
-                results.innerHTML =
-                    `
-                    <div class="no-results">
-                        <h3>No research found</h3>
-                        <p>
-                            Try using different or broader search terms.
-                        </p>
-                    </div>
-                    `;
 
-                return;
+                            if (
+                                paper.externalIds &&
+                                paper.externalIds.DOI
+                            ) {
 
-            }
+                                sourceUrl =
+                                    "https://doi.org/" +
+                                    paper.externalIds.DOI;
 
+                            }
 
-            data.papers.forEach(
-                function(paper) {
 
-                    displayPaper(
-                        paper,
-                        need,
-                        section
-                    );
+                            let pdfUrl = "";
 
-                }
-            );
 
-        }
-        catch (error) {
+                            if (
+                                paper.openAccessPdf &&
+                                paper.openAccessPdf.url
+                            ) {
 
-            showError(
-                error.message ||
-                "Unable to search academic sources."
-            );
+                                pdfUrl =
+                                    paper.openAccessPdf.url;
 
-        }
-        finally {
+                            }
 
-            searchButton.disabled =
-                false;
 
-            searchButton.innerText =
-                "🔍 Search, Read & Extract";
+                            return {
 
-        }
+                                title:
+                                    paper.title ||
+                                    "Untitled research paper",
 
-    }
+                                authors:
+                                    authors ||
+                                    "Author information unavailable",
 
+                                year:
+                                    paper.year ||
+                                    "Year unavailable",
 
-    function displayPaper(
-        paper,
-        request,
-        section
-    ) {
+                                abstract:
+                                    paper.abstract ||
+                                    "No abstract available.",
 
-        const article =
-            document.createElement(
-                "article"
-            );
+                                journal:
+                                    paper.journal &&
+                                    paper.journal.name
+                                        ? paper.journal.name
+                                        : "Publication information unavailable",
 
+                                url:
+                                    sourceUrl,
 
-        article.className =
-            "paper";
+                                pdfUrl:
+                                    pdfUrl
 
+                            };
 
-        const extracted =
-            extractRequestedInformation(
-                paper.fullText ||
-                "",
-                request
-            );
+                        });
 
 
-        let html = "";
+                if (papers.length > 0) {
 
+                    const processed =
+                        await processPapers(papers);
 
-        html +=
-            "<h2>" +
-            escapeHTML(
-                paper.title
-            ) +
-            "</h2>";
 
+                    return {
 
-        html +=
-            `
-            <div class="paper-meta">
-                <strong>Authors:</strong>
-                ${escapeHTML(paper.authors || "Unavailable")}
-                <br>
+                        statusCode: 200,
 
-                <strong>Year:</strong>
-                ${escapeHTML(String(paper.year || "Unavailable"))}
-                <br>
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
 
-                <strong>Publication:</strong>
-                ${escapeHTML(paper.journal || "Unavailable")}
-            </div>
-            `;
+                        body:
+                            JSON.stringify({
 
+                                papers:
+                                    processed,
 
-        if (
-            paper.fullTextAvailable
-        ) {
+                                source:
+                                    "Semantic Scholar"
 
-            html +=
-                `
-                <div class="requested">
+                            })
 
-                    <h3>
-                        🎯 Requested Information
-                    </h3>
-
-                    <div class="extracted-text">
-                        ${escapeHTML(extracted)}
-                    </div>
-
-                </div>
-                `;
-
-        }
-        else {
-
-            html +=
-                `
-                <div class="unavailable">
-
-                    <strong>
-                        📖 Full text could not be accessed
-                    </strong>
-
-                    <p>
-                        This result does not currently provide
-                        an accessible PDF that InfoTrace can read.
-                    </p>
-
-                </div>
-                `;
-
-        }
-
-
-        if (
-            paper.abstract &&
-            paper.abstract !==
-            "No abstract available."
-        ) {
-
-            html +=
-                `
-                <div class="abstract">
-
-                    <strong>
-                        Abstract
-                    </strong>
-
-                    <p>
-                        ${escapeHTML(
-                            paper.abstract
-                        )}
-                    </p>
-
-                </div>
-                `;
-
-        }
-
-
-        html +=
-            `
-            <div class="actions">
-            `;
-
-
-        if (
-            paper.url
-        ) {
-
-            html +=
-                `
-                <a
-                    href="${escapeAttribute(paper.url)}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="action-btn source-btn"
-                >
-                    🔗 View Source
-                </a>
-                `;
-
-        }
-
-
-        if (
-            paper.pdfUrl
-        ) {
-
-            html +=
-                `
-                <a
-                    href="${escapeAttribute(paper.pdfUrl)}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="action-btn download-btn"
-                >
-                    📥 Open / Download PDF
-                </a>
-                `;
-
-        }
-
-
-        html +=
-            `
-                <button
-                    type="button"
-                    class="action-btn save-btn"
-                >
-                    💾 Save to InfoTrace
-                </button>
-
-            </div>
-            `;
-
-
-        article.innerHTML =
-            html;
-
-
-        const saveButton =
-            article.querySelector(
-                ".save-btn"
-            );
-
-
-        saveButton.addEventListener(
-            "click",
-            function() {
-
-                saveResearch(
-                    paper,
-                    extracted,
-                    request,
-                    section
-                );
-
-                saveButton.innerText =
-                    "✅ Saved to InfoTrace";
-
-                saveButton.disabled =
-                    true;
-
-            }
-        );
-
-
-        results.appendChild(
-            article
-        );
-
-                }
-    function extractRequestedInformation(
-        text,
-        request
-    ) {
-
-        if (!text) {
-
-            return "No full-text content was available for extraction.";
-
-        }
-
-
-        const cleanText =
-            text
-                .replace(
-                    /\s+/g,
-                    " "
-                )
-                .trim();
-
-
-        const sentences =
-            cleanText.split(
-                /(?<=[.!?])\s+/
-            );
-
-
-        const requestWords =
-            request
-                .toLowerCase()
-                .replace(
-                    /[^a-z0-9\s]/g,
-                    ""
-                )
-                .split(
-                    /\s+/
-                )
-                .filter(
-                    function(word) {
-
-                        return word.length > 4;
-
-                    }
-                );
-
-
-        const keywords = [];
-
-
-        requestWords.forEach(
-            function(word) {
-
-                if (
-                    !keywords.includes(word)
-                ) {
-
-                    keywords.push(word);
+                    };
 
                 }
 
             }
-        );
 
+        }
+        catch (semanticError) {
 
-        const requestLower =
-            request.toLowerCase();
-
-
-        if (
-            requestLower.includes("problem") ||
-            requestLower.includes("challenge") ||
-            requestLower.includes("barrier") ||
-            requestLower.includes("difficulty")
-        ) {
-
-            keywords.push(
-                "problem",
-                "challenge",
-                "barrier",
-                "difficulty",
-                "limitation",
-                "lack",
-                "poor",
-                "inadequate",
-                "constraint"
+            console.log(
+                "Semantic Scholar unavailable. Trying OpenAlex.",
+                semanticError.message
             );
 
         }
 
 
-        if (
-            requestLower.includes("effect") ||
-            requestLower.includes("impact") ||
-            requestLower.includes("influence")
-        ) {
+        /*
+        =====================================================
+        SEARCH 2 — OPENALEX FALLBACK
+        =====================================================
+        */
 
-            keywords.push(
-                "effect",
-                "impact",
-                "influence",
-                "relationship",
-                "associated",
-                "increase",
-                "decrease",
-                "improve"
-            );
+        try {
 
-        }
+            const openAlexURL =
+                "https://api.openalex.org/works" +
+                "?search=" +
+                encodeURIComponent(query) +
+                "&per-page=10";
 
 
-        if (
-            requestLower.includes("cause") ||
-            requestLower.includes("factor")
-        ) {
-
-            keywords.push(
-                "cause",
-                "factor",
-                "because",
-                "due to",
-                "contribute"
-            );
-
-        }
+            const openAlexResponse =
+                await fetch(openAlexURL);
 
 
-        if (
-            requestLower.includes("recommend") ||
-            requestLower.includes("solution")
-        ) {
+            if (!openAlexResponse.ok) {
 
-            keywords.push(
-                "recommend",
-                "recommendation",
-                "suggest",
-                "should",
-                "need to",
-                "propose"
-            );
+                return {
 
-        }
+                    statusCode:
+                        openAlexResponse.status,
 
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-        if (
-            requestLower.includes("gap")
-        ) {
+                    body:
+                        JSON.stringify({
 
-            keywords.push(
-                "research gap",
-                "gap",
-                "limited",
-                "little research",
-                "few studies",
-                "understudied",
-                "remains unclear"
-            );
+                            error:
+                                "Academic search services are temporarily unavailable."
 
-        }
+                        })
+
+                };
+
+            }
 
 
-        const matches =
-            sentences.filter(
-                function(sentence) {
-
-                    const lower =
-                        sentence.toLowerCase();
+            const openAlexData =
+                await openAlexResponse.json();
 
 
-                    return keywords.some(
-                        function(keyword) {
+            const papers =
+                (openAlexData.results || [])
+                    .map(function(work) {
 
-                            return lower.includes(
-                                keyword
-                            );
+                        const authors =
+                            (work.authorships || [])
+                                .map(function(author) {
+
+                                    return author.author &&
+                                        author.author.display_name
+                                        ? author.author.display_name
+                                        : "";
+
+                                })
+                                .filter(Boolean)
+                                .join(", ");
+
+
+                        let sourceUrl =
+                            work.doi ||
+                            work.id ||
+                            "";
+
+
+                        if (
+                            work.doi &&
+                            work.doi.startsWith(
+                                "https://doi.org/"
+                            )
+                        ) {
+
+                            sourceUrl =
+                                work.doi;
 
                         }
-                    );
 
-                }
+
+                        const journal =
+                            work.primary_location &&
+                            work.primary_location.source &&
+                            work.primary_location.source.display_name
+                                ? work.primary_location.source.display_name
+                                : "Publication information unavailable";
+
+
+                        let pdfUrl = "";
+
+
+                        if (
+                            work.open_access &&
+                            work.open_access.oa_url
+                        ) {
+
+                            pdfUrl =
+                                work.open_access.oa_url;
+
+                        }
+
+
+                        if (
+                            !pdfUrl &&
+                            work.primary_location &&
+                            work.primary_location.pdf_url
+                        ) {
+
+                            pdfUrl =
+                                work.primary_location.pdf_url;
+
+                        }
+
+
+                        return {
+
+                            title:
+                                work.title ||
+                                "Untitled research paper",
+
+                            authors:
+                                authors ||
+                                "Author information unavailable",
+
+                            year:
+                                work.publication_year ||
+                                "Year unavailable",
+
+                            abstract:
+                                reconstructAbstract(
+                                    work.abstract_inverted_index
+                                ),
+
+                            journal:
+                                journal,
+
+                            url:
+                                sourceUrl,
+
+                            pdfUrl:
+                                pdfUrl
+
+                        };
+
+                    });
+
+
+            const processed =
+                await processPapers(papers);
+
+
+            return {
+
+                statusCode: 200,
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify({
+
+                        papers:
+                            processed,
+
+                        source:
+                            "OpenAlex"
+
+                    })
+
+            };
+
+        }
+        catch (openAlexError) {
+
+            console.error(
+                "OpenAlex error:",
+                openAlexError
             );
 
 
-        const uniqueMatches = [];
+            return {
+
+                statusCode: 500,
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify({
+
+                        error:
+                            "Unable to search academic sources."
+
+                    })
+
+            };
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(
+            "Research search error:",
+            error
+        );
 
 
-        matches.forEach(
-            function(sentence) {
+        return {
 
-                if (
-                    !uniqueMatches.includes(
-                        sentence
-                    )
-                ) {
+            statusCode: 500,
 
-                    uniqueMatches.push(
-                        sentence
-                    );
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify({
+
+                    error:
+                        "Unable to search academic sources."
+
+                })
+
+        };
+
+    }
+
+};
+/*
+=========================================================
+PROCESS PAPERS
+=========================================================
+*/
+
+async function processPapers(papers) {
+
+    const processed = [];
+
+
+    for (const paper of papers) {
+
+        let fullText = "";
+
+        let fullTextAvailable = false;
+
+
+        /*
+        -----------------------------------------
+        TRY TO READ THE PDF
+        -----------------------------------------
+        */
+
+        if (paper.pdfUrl) {
+
+            try {
+
+                const pdfResponse =
+                    await fetch(paper.pdfUrl);
+
+
+                if (pdfResponse.ok) {
+
+                    const contentType =
+                        (
+                            pdfResponse.headers.get(
+                                "content-type"
+                            ) || ""
+                        ).toLowerCase();
+
+
+                    /*
+                    -----------------------------------------
+                    MAKE SURE IT IS ACTUALLY A PDF
+                    -----------------------------------------
+                    */
+
+                    if (
+                        contentType.includes(
+                            "application/pdf"
+                        )
+                    ) {
+
+                        const buffer =
+                            await pdfResponse.arrayBuffer();
+
+
+                        /*
+                        -----------------------------------------
+                        CREATE PDF DOCUMENT
+                        -----------------------------------------
+                        */
+
+                        const pdf =
+                            await getDocumentProxy(
+                                new Uint8Array(buffer)
+                            );
+
+
+                        /*
+                        -----------------------------------------
+                        EXTRACT PDF TEXT
+                        -----------------------------------------
+                        */
+
+                        const result =
+                            await extractText(
+                                pdf,
+                                {
+                                    mergePages: true
+                                }
+                            );
+
+
+                        fullText =
+                            typeof result.text === "string"
+                                ? result.text
+                                : "";
+
+
+                        if (fullText.trim()) {
+
+                            fullTextAvailable = true;
+
+                        }
+
+                    }
 
                 }
 
             }
-        );
+            catch (pdfError) {
 
+                console.log(
+                    "Could not read PDF:",
+                    paper.pdfUrl,
+                    pdfError.message
+                );
 
-        if (
-            uniqueMatches.length === 0
-        ) {
-
-            return (
-                "No directly matching passage was found in the accessible full text. " +
-                "Try making your request more specific or use different keywords."
-            );
+            }
 
         }
 
 
-        return uniqueMatches
-            .slice(0, 8)
-            .join("\n\n");
-
-    }
-
-
-    function saveResearch(
-        paper,
-        extracted,
-        request,
-        section
-    ) {
-
-        let saved =
-            JSON.parse(
-                localStorage.getItem(
-                    "infoTraceData"
-                )
-            ) || [];
-
-
-        const record = {
-
-            id:
-                Date.now(),
+        processed.push({
 
             title:
                 paper.title,
 
-            information:
-                extracted,
+            authors:
+                paper.authors,
 
-            source:
-                paper.url ||
-                paper.pdfUrl ||
-                "Academic research source",
+            year:
+                paper.year,
 
-            location:
-                paper.pdfUrl
-                    ? "Academic PDF"
-                    : "Academic database",
+            abstract:
+                paper.abstract,
 
-            reason:
-                "Research Discovery",
+            journal:
+                paper.journal,
 
-            problem:
-                request,
+            url:
+                paper.url,
 
-            keywords:
-                request,
+            pdfUrl:
+                paper.pdfUrl,
 
-            used:
-                "No",
+            fullText:
+                fullText,
 
-            usage:
-                section ||
-                "Research",
+            fullTextAvailable:
+                fullTextAvailable
 
-            notes:
-                "Extracted by InfoTrace Research Discovery from an accessible full-text research document.\n\n" +
-                "Authors: " +
-                (paper.authors || "Unavailable") +
-                "\n\nYear: " +
-                (paper.year || "Unavailable") +
-                "\n\nPDF: " +
-                (paper.pdfUrl || "Not available"),
-
-            date:
-                new Date().toLocaleString()
-
-        };
-
-
-        saved.push(
-            record
-        );
-
-
-        localStorage.setItem(
-            "infoTraceData",
-            JSON.stringify(
-                saved
-            )
-        );
-
-
-        alert(
-            "Research information saved successfully to InfoTrace."
-        );
+        });
 
     }
 
 
-    function showLoading(
-        message
-    ) {
+    return processed;
 
-        statusBox.className =
-            "loading";
-
-        statusBox.innerText =
-            message;
-
-    }
+}
 
 
-    function showError(
-        message
-    ) {
+/*
+=========================================================
+RECONSTRUCT OPENALEX ABSTRACT
+=========================================================
+*/
 
-        statusBox.className =
-            "error";
+function reconstructAbstract(
+    invertedIndex
+) {
 
-        statusBox.innerText =
-            message;
+    if (!invertedIndex) {
+
+        return "No abstract available.";
 
     }
 
 
-    function hideStatus() {
-
-        statusBox.style.display =
-            "none";
-
-        statusBox.className =
-            "";
-
-        statusBox.innerText =
-            "";
-
-    }
+    const words = [];
 
 
-    function escapeHTML(
-        value
-    ) {
+    Object.keys(
+        invertedIndex
+    ).forEach(
+        function(word) {
 
-        return String(
-            value || ""
-        )
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
+            const positions =
+                invertedIndex[word];
+
+
+            positions.forEach(
+                function(position) {
+
+                    words[position] =
+                        word;
+
+                }
             );
 
-    }
+        }
+    );
 
 
-    function escapeAttribute(
-        value
-    ) {
-
-        return escapeHTML(
-            value
-        );
-
-    }
-
-</script>
+    const abstract =
+        words
+            .filter(Boolean)
+            .join(" ");
 
 
-</body>
+    return (
+        abstract ||
+        "No abstract available."
+    );
 
-</html>
+}
